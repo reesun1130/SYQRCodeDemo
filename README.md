@@ -1,6 +1,6 @@
 # SYQRCodeDemo
 
-SYQRCode:IOS原生API，需要IOS7.0及以上系统支持。简单易用，使用block做回调处理。
+SYQRCode:低仿微信二维码扫描，IOS原生API，需要IOS7.0及以上系统支持。简单易用，使用block做回调处理。
 
 用法：
     
