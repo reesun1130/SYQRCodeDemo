@@ -28,7 +28,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "CFF5943E1A5BC9050090BF13"
+               BlueprintIdentifier = "CF0787761A6F4DC4006A0AA9"
                BuildableName = "SYQRCodeDemoTests.xctest"
                BlueprintName = "SYQRCodeDemoTests"
                ReferencedContainer = "container:SYQRCodeDemo.xcodeproj">
@@ -46,7 +46,7 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "CFF5943E1A5BC9050090BF13"
+               BlueprintIdentifier = "CF0787761A6F4DC4006A0AA9"
                BuildableName = "SYQRCodeDemoTests.xctest"
                BlueprintName = "SYQRCodeDemoTests"
                ReferencedContainer = "container:SYQRCodeDemo.xcodeproj">

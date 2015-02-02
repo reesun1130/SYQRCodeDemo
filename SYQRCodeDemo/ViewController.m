@@ -9,11 +9,17 @@
 #import "ViewController.h"
 #import "SYQRCodeViewController.h"
 
+@interface ViewController ()
+
+@end
+
 @implementation ViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    self.saomiaoBtn.layer.borderColor = [UIColor greenColor].CGColor;
+    self.saomiaoBtn.layer.borderWidth = 1.5;
     // Do any additional setup after loading the view, typically from a nib.
 }
 
@@ -26,20 +32,20 @@
 - (IBAction)saomiaoAction:(id)sender
 {
     //扫描二维码
-    SYQRCodeViewController *aaa = [[SYQRCodeViewController alloc] init];
-    aaa.SYQRCodeSuncessBlock = ^(NSString *qrString){
-        
+    SYQRCodeViewController *qrcodevc = [[SYQRCodeViewController alloc] init];
+    qrcodevc.SYQRCodeSuncessBlock = ^(SYQRCodeViewController *aqrvc,NSString *qrString){
         self.saomiaoLabel.text = qrString;
-    
+        [aqrvc dismissViewControllerAnimated:NO completion:nil];
     };
-    
-    aaa.SYQRCodeCancleBlock = ^(SYQRCodeViewController *are){
-    
-        self.saomiaoLabel.text = @"扫描取消~";
-        [are dismissViewControllerAnimated:YES completion:nil];
-    
+    qrcodevc.SYQRCodeFailBlock = ^(SYQRCodeViewController *aqrvc){
+        self.saomiaoLabel.text = @"fail~";
+        [aqrvc dismissViewControllerAnimated:NO completion:nil];
     };
-    [self presentViewController:aaa animated:YES completion:nil];
+    qrcodevc.SYQRCodeCancleBlock = ^(SYQRCodeViewController *aqrvc){
+        [aqrvc dismissViewControllerAnimated:NO completion:nil];
+        self.saomiaoLabel.text = @"cancle~";
+    };
+    [self presentViewController:qrcodevc animated:YES completion:nil];
 }
 
 @end

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>E340CCFF-8ABE-4FAD-B5E6-7A9449093CA2</string>
+	<key>IDESourceControlProjectName</key>
+	<string>SYQRCodeDemo</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>C78228F27F4382368DFBC0FC663C6751B2209155</key>
+		<string>https://github.com/reesun1130/SYQRCodeDemo.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>SYQRCodeDemo.xcodeproj</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>C78228F27F4382368DFBC0FC663C6751B2209155</key>
+		<string>../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/reesun1130/SYQRCodeDemo.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>C78228F27F4382368DFBC0FC663C6751B2209155</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>C78228F27F4382368DFBC0FC663C6751B2209155</string>
+			<key>IDESourceControlWCCName</key>
+			<string>SYQRCodeDemo</string>
+		</dict>
+	</array>
+</dict>
+</plist>
