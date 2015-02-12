@@ -22,7 +22,7 @@ SYQRCode:低仿微信二维码扫描，IOS原生API，需要IOS7.0及以上系�
 # 效果如下：
  ![image](https://github.com/reesun1130/SYQRCodeDemo/raw/master/SYQRCodeDemo/syqrcode.png)
  
-另附IOS7二维码生成方法：
+# 另附IOS7二维码生成方法：
 
 ###- (UIImage *)makeQRCodeImage
 ###{
