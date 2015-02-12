@@ -24,16 +24,15 @@ SYQRCode:低仿微信二维码扫描，IOS原生API，需要IOS7.0及以上系�
  
 另附IOS7二维码生成方法：
 
-- (UIImage *)makeQRCodeImage
-{
+###- (UIImage *)makeQRCodeImage
+###{
     CIFilter *filter_qrcode = [CIFilter filterWithName:@"CIQRCodeGenerator"];
     [filter_qrcode setDefaults];
+
     
     NSData *data = [@"https://github.com/reesun1130" dataUsingEncoding:NSUTF8StringEncoding];
     [filter_qrcode setValue:data forKey:@"inputMessage"];
-    
     CIImage *outputImage = [filter_qrcode outputImage];
-    
     CIContext *context = [CIContext contextWithOptions:nil];
     CGImageRef cgImage = [context createCGImage:outputImage
                                        fromRect:[outputImage extent]];
@@ -51,14 +50,13 @@ SYQRCode:低仿微信二维码扫描，IOS原生API，需要IOS7.0及以上系�
     resized = [self imageBlackToTransparent:resized withRed:30 andGreen:191 andBlue:109];
     
     CGImageRelease(cgImage);
-
     return resized;
-}
+###}
 
-- (UIImage *)resizeImage:(UIImage *)image
-             withQuality:(CGInterpolationQuality)quality
-                    rate:(CGFloat)rate
-{
+###- (UIImage *)resizeImage:(UIImage *)image
+###             withQuality:(CGInterpolationQuality)quality
+###                    rate:(CGFloat)rate
+###{
 	UIImage *resized = nil;
 	CGFloat width = image.size.width * rate;
 	CGFloat height = image.size.height * rate;
@@ -71,14 +69,14 @@ SYQRCode:低仿微信二维码扫描，IOS原生API，需要IOS7.0及以上系�
 	UIGraphicsEndImageContext();
 	
 	return resized;
-}
+###}
 
-void ProviderReleaseData (void *info, const void *data, size_t size){
+###void ProviderReleaseData (void *info, const void *data, size_t size){
     free((void*)data);
-}
+###}
 
-- (UIImage*)imageBlackToTransparent:(UIImage*)image withRed:(CGFloat)red andGreen:(CGFloat)green andBlue:(CGFloat)blue
-{
+###- (UIImage*)imageBlackToTransparent:(UIImage*)image withRed:(CGFloat)red andGreen:(CGFloat)green andBlue:(CGFloat)blue
+###{
     const int imageWidth = image.size.width;
     const int imageHeight = image.size.height;
     
@@ -123,5 +121,6 @@ void ProviderReleaseData (void *info, const void *data, size_t size){
     CGColorSpaceRelease(colorSpace);
     
     return resultUIImage;
-}
+###}
+
 
