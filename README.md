@@ -1,9 +1,11 @@
 # SYQRCodeDemo
 
 SYQRCode:低仿微信二维码扫描，IOS原生API，需要IOS7.0及以上系统支持。简单易用，使用block做回调处理。
+fix crash ---- Terminating app due to uncaught exception NSInvalidArgumentException , reason: [AVCaptureMetadataOutput setMetadataObjectTypes:] unsupported type found.  Use availableMetadataObjectTypes.
+
 
 用法：
-    使用前请判断是否允许访问相机：
+    ###使用前请判断是否允许访问相机：
     
     AVAuthorizationStatus status = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
         
@@ -124,5 +126,6 @@ SYQRCode:低仿微信二维码扫描，IOS原生API，需要IOS7.0及以上系�
     
     return resultUIImage;
 ###}
+
 
 
