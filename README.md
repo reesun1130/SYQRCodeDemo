@@ -7,7 +7,38 @@ fix crash ---- Terminating app due to uncaught exception NSInvalidArgumentExcept
 用法：
     ###使用前请判断是否允许访问相机：
     
-    AVAuthorizationStatus status = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
+    + (BOOL)isAVCaptureActive
+    {
+      AVCaptureDevice *aDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
+    
+      NSError *inputError = nil;
+      AVCaptureDeviceInput *aInput = [AVCaptureDeviceInput deviceInputWithDevice:aDevice error:&inputError];
+    
+      if (aInput == nil)
+      {
+          SYLog(@"init AVCapture fail--%@",inputError);
+
+          return NO;
+      }
+    
+      return YES;
+    }
+    
+    if(isAVCaptureActive)
+    {
+       SYQRCodeViewController *syqrc = [[SYQRCodeViewController alloc] init];
+       syqrc.SYQRCodeSuncessBlock = ^(NSString *qrString){
+         self.saomiaoLabel.text = qrString;
+       };
+    
+       syqrc.SYQRCodeCancleBlock = ^(SYQRCodeViewController *aqrc){
+         self.saomiaoLabel.text = @"扫描取消~";
+         [aqrc dismissViewControllerAnimated:YES completion:nil];
+       };
+       [self presentViewController:syqrc animated:YES completion:nil];
+    }
+    
+    /*AVAuthorizationStatus status = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
         
     if(status == AVAuthorizationStatusAuthorized)
     {
@@ -21,7 +52,7 @@ fix crash ---- Terminating app due to uncaught exception NSInvalidArgumentExcept
          [aqrc dismissViewControllerAnimated:YES completion:nil];
        };
        [self presentViewController:syqrc animated:YES completion:nil];
-    }
+    }*/
 
 # 效果如下：
  ![image](https://github.com/reesun1130/SYQRCodeDemo/raw/master/SYQRCodeDemo/syqrcode.png)
