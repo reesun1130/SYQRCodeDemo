@@ -21,10 +21,12 @@ static const float kReaderViewHeight = 200;
 
 @interface SYQRCodeViewController () <AVCaptureMetadataOutputObjectsDelegate>
 
-@property (nonatomic, strong) AVCaptureSession *qrSession;//回话
-@property (nonatomic, strong) AVCaptureVideoPreviewLayer *qrVideoPreviewLayer;//读取
-@property (nonatomic, strong) UIImageView *line;//交互线
-@property (nonatomic, strong) NSTimer *lineTimer;//交互线控制
+@property (nonatomic, strong) AVCaptureSession *qrSession;
+@property (nonatomic, strong) AVCaptureDevice *captureDevice;
+@property (nonatomic, strong) AVCaptureVideoPreviewLayer *qrVideoPreviewLayer;
+@property (nonatomic, strong) UIImageView *line;
+@property (nonatomic, strong) NSTimer *lineTimer;
+@property (nonatomic) BOOL isLightOn;
 
 @end
 
@@ -35,64 +37,56 @@ static const float kReaderViewHeight = 200;
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     self.view.backgroundColor = [UIColor whiteColor];
+    _captureDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
     
+    if (![_captureDevice hasTorch]) {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"当前设备没有闪光灯" delegate:nil cancelButtonTitle:@"知道了" otherButtonTitles:nil, nil];
+        [alert show];
+    }
+    _isLightOn = NO;
+    self.title = @"Scan";
+    [self createBackBtn];
     [self initUI];
     [self setOverlayPickerView];
     [self startSYQRCodeReading];
-    [self initTitleView];
-    [self createBackBtn];
-}
-
-- (void)dealloc
-{
-    if (_qrSession) {
-        [_qrSession stopRunning];
-        _qrSession = nil;
-    }
-    
-    if (_qrVideoPreviewLayer) {
-        _qrVideoPreviewLayer = nil;
-    }
-    
-    if (_line) {
-        _line = nil;
-    }
-    
-    if (_lineTimer)
-    {
-        [_lineTimer invalidate];
-        _lineTimer = nil;
-    }
-}
-
-- (void)initTitleView
-{
-    UIView *bgView = [[UIView alloc] initWithFrame:CGRectMake(0,0,kDeviceWidth, 64)];
-    bgView.backgroundColor = [UIColor colorWithRed:62.0/255 green:199.0/255 blue:153.0/255 alpha:1.0];
-    [self.view addSubview:bgView];
-    
-    UILabel *titleLab = [[UILabel alloc] initWithFrame:CGRectMake((kDeviceWidth - 40) / 2.0, 28, 40, 20)];
-    //scanCropView.image=[UIImage imageNamed:@""];
-    //titleLab.layer.borderColor = [UIColor greenColor].CGColor;
-    //titleLab.layer.borderWidth = 2.0;
-    //titleLab.backgroundColor = [UIColor colorWithRed:62.0/255 green:199.0/255 blue:153.0/255 alpha:1.0];
-    titleLab.text = @"扫题";
-    titleLab.shadowColor = [UIColor lightGrayColor];
-    titleLab.shadowOffset = CGSizeMake(0, - 1);
-    titleLab.font = [UIFont boldSystemFontOfSize:18.0];
-    titleLab.textColor = [UIColor whiteColor];
-    titleLab.textAlignment = NSTextAlignmentCenter;
-    [self.view addSubview:titleLab];
 }
 
 - (void)createBackBtn
 {
-    UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
-    [btn setFrame:CGRectMake(20, 28, 60, 24)];
-    [btn setImage:[UIImage imageNamed:@"bar_back"] forState:UIControlStateNormal];
-    [btn addTarget:self action:@selector(cancleSYQRCodeReading) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:btn];
+//    UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
+//    [btn setFrame:CGRectMake(20, 28, 60, 24)];
+//    [btn setImage:[UIImage imageNamed:@"bar_back"] forState:UIControlStateNormal];
+//    [btn addTarget:self action:@selector(cancleSYQRCodeReading) forControlEvents:UIControlEventTouchUpInside];
+//    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:btn];
+    UIBarButtonItem *rightBtn = [[UIBarButtonItem alloc] initWithTitle:@"开灯" style:UIBarButtonItemStylePlain target:self action:@selector(openLight:)];
+    self.navigationItem.rightBarButtonItem = rightBtn;
+    
 }
+
+- (void)openLight:(UIButton *)sender{
+    
+    if (_isLightOn) {
+        [self turnOnTorch:NO];
+    }else{
+        [self turnOnTorch:YES];
+    }
+    _isLightOn = !_isLightOn;
+}
+
+- (void)turnOnTorch:(BOOL)on
+{
+    [_captureDevice lockForConfiguration:nil];
+    if (on) {
+        
+        [_captureDevice setTorchMode:AVCaptureTorchModeOn];
+    }else {
+        
+        [_captureDevice setTorchMode: AVCaptureTorchModeOff];
+    }
+    
+    [_captureDevice unlockForConfiguration];
+}
+
 
 - (void)initUI
 {
@@ -103,10 +97,8 @@ static const float kReaderViewHeight = 200;
     
     AVCaptureDeviceInput *input = [AVCaptureDeviceInput deviceInputWithDevice:device error:&error];
     
-    if (error)
-    {
+    if (error){
         NSLog(@"没有摄像头-%@", error.localizedDescription);
-        
         return;
     }
     
@@ -122,16 +114,13 @@ static const float kReaderViewHeight = 200;
     AVCaptureSession *session = [[AVCaptureSession alloc] init];
     
     // 读取质量，质量越高，可读取小尺寸的二维码
-    if ([session canSetSessionPreset:AVCaptureSessionPreset1920x1080])
-    {
+    if ([session canSetSessionPreset:AVCaptureSessionPreset1920x1080]){
         [session setSessionPreset:AVCaptureSessionPreset1920x1080];
-    }
-    else if ([session canSetSessionPreset:AVCaptureSessionPreset1280x720])
-    {
+        
+    }else if ([session canSetSessionPreset:AVCaptureSessionPreset1280x720]){
+        
         [session setSessionPreset:AVCaptureSessionPreset1280x720];
-    }
-    else
-    {
+    }else{
         [session setSessionPreset:AVCaptureSessionPresetPhoto];
     }
     
@@ -163,7 +152,6 @@ static const float kReaderViewHeight = 200;
     
     //将图层添加到视图的图层
     [self.view.layer insertSublayer:preview atIndex:0];
-    //[self.view.layer addSublayer:preview];
     self.qrVideoPreviewLayer = preview;
     self.qrSession = session;
 }
@@ -387,6 +375,29 @@ static const float kReaderViewHeight = 200;
     }
     
     //NSLog(@"_line.frame.origin.y==%f",_line.frame.origin.y);
+}
+
+
+- (void)dealloc
+{
+    if (_qrSession) {
+        [_qrSession stopRunning];
+        _qrSession = nil;
+    }
+    
+    if (_qrVideoPreviewLayer) {
+        _qrVideoPreviewLayer = nil;
+    }
+    
+    if (_line) {
+        _line = nil;
+    }
+    
+    if (_lineTimer)
+    {
+        [_lineTimer invalidate];
+        _lineTimer = nil;
+    }
 }
 
 @end

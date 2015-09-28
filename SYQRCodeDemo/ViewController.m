@@ -6,6 +6,9 @@
 //  Copyright (c) 2015年 SY. All rights reserved.
 //
 
+#define kTipsAlert(_S_, ...)     [[[UIAlertView alloc] initWithTitle:@"提示" message:[NSString stringWithFormat:(_S_), ##__VA_ARGS__] delegate:nil cancelButtonTitle:@"知道了" otherButtonTitles:nil] show]
+
+
 #import "ViewController.h"
 #import "SYQRCodeViewController.h"
 
@@ -17,10 +20,13 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+    self.view.backgroundColor = [UIColor whiteColor];
     self.saomiaoBtn.layer.borderColor = [UIColor greenColor].CGColor;
     self.saomiaoBtn.layer.borderWidth = 1.5;
-    // Do any additional setup after loading the view, typically from a nib.
+    self.title = @"Example";
+    
+    self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
+
 }
 
 - (void)didReceiveMemoryWarning {
@@ -33,19 +39,21 @@
 {
     //扫描二维码
     SYQRCodeViewController *qrcodevc = [[SYQRCodeViewController alloc] init];
+    
     qrcodevc.SYQRCodeSuncessBlock = ^(SYQRCodeViewController *aqrvc,NSString *qrString){
         self.saomiaoLabel.text = qrString;
-        [aqrvc dismissViewControllerAnimated:NO completion:nil];
+        
+        [self.navigationController popViewControllerAnimated:YES];
     };
     qrcodevc.SYQRCodeFailBlock = ^(SYQRCodeViewController *aqrvc){
-        self.saomiaoLabel.text = @"fail~";
-        [aqrvc dismissViewControllerAnimated:NO completion:nil];
+        kTipsAlert(@"Failed");
+        [self.navigationController popViewControllerAnimated:YES];
     };
     qrcodevc.SYQRCodeCancleBlock = ^(SYQRCodeViewController *aqrvc){
-        [aqrvc dismissViewControllerAnimated:NO completion:nil];
-        self.saomiaoLabel.text = @"cancle~";
+        kTipsAlert(@"Cancle");
+        [self.navigationController popViewControllerAnimated:YES];
     };
-    [self presentViewController:qrcodevc animated:YES completion:nil];
+    [self.navigationController pushViewController:qrcodevc animated:YES];
 }
 
 @end
