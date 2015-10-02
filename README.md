@@ -17,7 +17,13 @@ SYQRCode:仿微信二维码扫描
 
 ### Introduction:基于<a href="https://github.com/reesun1130/SYQRCodeDemo">SYQRCodeDemo</a>
 
-![intro png](https://github.com/sauchye/SYQRCodeDemo/Markdown/raw/master/Res/intro.png)
+
+
+
+
+![intro png](https://github.com/sauchye/SYQRCodeDemo/raw/master/intro.PNG)
+
+
 
 ### Example：将SYQRCodeViewController拖入工程即可使用
 
@@ -54,4 +60,3 @@ UIGraphicsEndImageContext();
 
 CGImageRelease(cgImage);
 ```
-
