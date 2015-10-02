@@ -7,7 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		CF30111C1A63AFCB00BD927A /* SYQRCodeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CF30111B1A63AFCB00BD927A /* SYQRCodeViewController.m */; };
+		02E79B2F1BBD875900C46E1C /* SYQRCodeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 02E79B2E1BBD875900C46E1C /* SYQRCodeViewController.m */; };
+		B27F395543CF282583ED875B /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E6705B7F689DF5A8AAC0E016 /* libPods.a */; };
 		CFF5942C1A5BC9040090BF13 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = CFF5942B1A5BC9040090BF13 /* main.m */; };
 		CFF5942F1A5BC9040090BF13 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = CFF5942E1A5BC9040090BF13 /* AppDelegate.m */; };
 		CFF594321A5BC9040090BF13 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CFF594311A5BC9040090BF13 /* ViewController.m */; };
@@ -17,8 +18,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		CF30111A1A63AFCB00BD927A /* SYQRCodeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SYQRCodeViewController.h; sourceTree = "<group>"; };
-		CF30111B1A63AFCB00BD927A /* SYQRCodeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SYQRCodeViewController.m; sourceTree = "<group>"; };
+		02D74849BF540DE0CC6FA25C /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
+		02E79B2D1BBD875900C46E1C /* SYQRCodeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SYQRCodeViewController.h; sourceTree = "<group>"; };
+		02E79B2E1BBD875900C46E1C /* SYQRCodeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SYQRCodeViewController.m; sourceTree = "<group>"; };
+		5CB593ACF081017BF20FB661 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		CFF594261A5BC9040090BF13 /* SYQRCodeDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SYQRCodeDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CFF5942A1A5BC9040090BF13 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		CFF5942B1A5BC9040090BF13 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -29,6 +32,7 @@
 		CFF594341A5BC9040090BF13 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		CFF594361A5BC9040090BF13 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		CFF594391A5BC9040090BF13 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
+		E6705B7F689DF5A8AAC0E016 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -36,27 +40,46 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B27F395543CF282583ED875B /* libPods.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		CF3011191A63AFCB00BD927A /* SYQRCode */ = {
+		02E79B2C1BBD875900C46E1C /* SYQRCodeViewController */ = {
 			isa = PBXGroup;
 			children = (
-				CF30111A1A63AFCB00BD927A /* SYQRCodeViewController.h */,
-				CF30111B1A63AFCB00BD927A /* SYQRCodeViewController.m */,
+				02E79B2D1BBD875900C46E1C /* SYQRCodeViewController.h */,
+				02E79B2E1BBD875900C46E1C /* SYQRCodeViewController.m */,
 			);
-			path = SYQRCode;
+			path = SYQRCodeViewController;
+			sourceTree = "<group>";
+		};
+		8DA54AEE82E621BE953A5C4C /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				02D74849BF540DE0CC6FA25C /* Pods.debug.xcconfig */,
+				5CB593ACF081017BF20FB661 /* Pods.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		A596935D4A0BFAE595CA38D7 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				E6705B7F689DF5A8AAC0E016 /* libPods.a */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		CFF5941D1A5BC9040090BF13 = {
 			isa = PBXGroup;
 			children = (
 				CFF594281A5BC9040090BF13 /* SYQRCodeDemo */,
-				CF3011191A63AFCB00BD927A /* SYQRCode */,
 				CFF594271A5BC9040090BF13 /* Products */,
+				8DA54AEE82E621BE953A5C4C /* Pods */,
+				A596935D4A0BFAE595CA38D7 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -71,6 +94,7 @@
 		CFF594281A5BC9040090BF13 /* SYQRCodeDemo */ = {
 			isa = PBXGroup;
 			children = (
+				02E79B2C1BBD875900C46E1C /* SYQRCodeViewController */,
 				CFF5942D1A5BC9040090BF13 /* AppDelegate.h */,
 				CFF5942E1A5BC9040090BF13 /* AppDelegate.m */,
 				CFF594301A5BC9040090BF13 /* ViewController.h */,
@@ -99,9 +123,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = CFF594491A5BC9050090BF13 /* Build configuration list for PBXNativeTarget "SYQRCodeDemo" */;
 			buildPhases = (
+				82FB4EE8F95C91FE550AD256 /* Check Pods Manifest.lock */,
 				CFF594221A5BC9040090BF13 /* Sources */,
 				CFF594231A5BC9040090BF13 /* Frameworks */,
 				CFF594241A5BC9040090BF13 /* Resources */,
+				DEF527D0460E6385D308935F /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -157,12 +183,45 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		82FB4EE8F95C91FE550AD256 /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		DEF527D0460E6385D308935F /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		CFF594221A5BC9040090BF13 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CF30111C1A63AFCB00BD927A /* SYQRCodeViewController.m in Sources */,
+				02E79B2F1BBD875900C46E1C /* SYQRCodeViewController.m in Sources */,
 				CFF594321A5BC9040090BF13 /* ViewController.m in Sources */,
 				CFF5942F1A5BC9040090BF13 /* AppDelegate.m in Sources */,
 				CFF5942C1A5BC9040090BF13 /* main.m in Sources */,
@@ -269,6 +328,7 @@
 		};
 		CFF5944A1A5BC9050090BF13 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 02D74849BF540DE0CC6FA25C /* Pods.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = SYQRCodeDemo/Info.plist;
@@ -284,6 +344,7 @@
 		};
 		CFF5944B1A5BC9050090BF13 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 5CB593ACF081017BF20FB661 /* Pods.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = SYQRCodeDemo/Info.plist;
