@@ -2,8 +2,8 @@
 //  ViewController.m
 //  SYQRCodeDemo
 //
-//  Created by sunbb on 15-1-6.
-//  Copyright (c) 2015年 SY. All rights reserved.
+//  Created by ree.sun on 15-1-6.
+//  Copyright © Ree Sun <ree.sun.cn@hotmail.com || 1507602555@qq.com>
 //
 
 #define kTipsAlert(_S_, ...)     [[[UIAlertView alloc] initWithTitle:@"提示" message:[NSString stringWithFormat:(_S_), ##__VA_ARGS__] delegate:nil cancelButtonTitle:@"知道了" otherButtonTitles:nil] show]
