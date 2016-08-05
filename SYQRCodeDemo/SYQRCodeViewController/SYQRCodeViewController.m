@@ -12,8 +12,6 @@
 #import "SYQRCodeOverlayView.h"
 #import "AVCaptureVideoPreviewLayer+Helper.h"
 
-static const float BTN_TAG = 100000;
-
 @interface SYQRCodeViewController () <AVCaptureMetadataOutputObjectsDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate>
 
 @property (nonatomic, strong) AVCaptureSession *qrSession;
