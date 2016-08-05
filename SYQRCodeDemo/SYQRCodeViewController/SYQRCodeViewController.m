@@ -298,7 +298,6 @@
                 
                 if ([strResponse hasPrefix:@"http"]) {
                     fail = NO;
-                    [self stopSYQRCodeReading];
 #warning scan success提示
                     AudioServicesPlaySystemSound(1360);
                     
@@ -315,6 +314,7 @@
             self.SYQRCodeFailBlock(self);
         }
     }
+    [self stopSYQRCodeReading];
 }
 
 #pragma mark - startSYQRCodeReading
