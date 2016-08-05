@@ -122,21 +122,21 @@ static NSString * const text = @"http://sauchye.com";
 
 
 #pragma mark - 扫描 读取
-- (IBAction)scanoAction
-{
+
+- (IBAction)scanoAction {
+    __weak ViewController *weakSelf = self;
     SYQRCodeViewController *qrcodevc = [[SYQRCodeViewController alloc] init];
     
-    qrcodevc.SYQRCodeSuncessBlock = ^(SYQRCodeViewController *aqrvc,NSString *qrString){
-        
-        [self.navigationController popViewControllerAnimated:YES];
+    qrcodevc.SYQRCodeSuncessBlock = ^(SYQRCodeViewController *aqrvc,NSString *qrString) {
+        [weakSelf.navigationController popViewControllerAnimated:YES];
     };
-    qrcodevc.SYQRCodeFailBlock = ^(SYQRCodeViewController *aqrvc){
+    qrcodevc.SYQRCodeFailBlock = ^(SYQRCodeViewController *aqrvc) {
         kTipsAlert(@"Failed");
-        [self.navigationController popViewControllerAnimated:YES];
+        [weakSelf.navigationController popViewControllerAnimated:YES];
     };
-    qrcodevc.SYQRCodeCancleBlock = ^(SYQRCodeViewController *aqrvc){
+    qrcodevc.SYQRCodeCancleBlock = ^(SYQRCodeViewController *aqrvc) {
         kTipsAlert(@"Cancle");
-        [self.navigationController popViewControllerAnimated:YES];
+        [weakSelf.navigationController popViewControllerAnimated:YES];
     };
     [self.navigationController pushViewController:qrcodevc animated:YES];
 }

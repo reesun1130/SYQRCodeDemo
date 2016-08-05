@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9046" systemVersion="14F27" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="QOk-A9-jnw">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9531" systemVersion="15C50" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="QOk-A9-jnw">
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9035"/>
-        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
     </dependencies>
     <scenes>
         <!--View Controller-->
@@ -18,47 +17,97 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vvN-kG-Si5">
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" image="codeImage" translatesAutoresizingMaskIntoConstraints="NO" id="GRJ-XS-KQK">
+                                <rect key="frame" x="200" y="244" width="200" height="200"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="200" id="981-Dv-zg4"/>
+                                    <constraint firstAttribute="height" constant="200" id="Cq0-K4-lJq"/>
+                                </constraints>
+                                <variation key="default">
+                                    <mask key="constraints">
+                                        <exclude reference="981-Dv-zg4"/>
+                                        <exclude reference="Cq0-K4-lJq"/>
+                                    </mask>
+                                </variation>
+                                <variation key="heightClass=regular">
+                                    <mask key="constraints">
+                                        <include reference="981-Dv-zg4"/>
+                                        <include reference="Cq0-K4-lJq"/>
+                                    </mask>
+                                </variation>
+                            </imageView>
+                            <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vvN-kG-Si5">
                                 <rect key="frame" x="194" y="180" width="212" height="33"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="212" id="USC-P8-qB6"/>
+                                    <constraint firstAttribute="width" constant="212" id="d9G-Xb-Ph8"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <state key="normal" title="生成二维码"/>
+                                <variation key="default">
+                                    <mask key="constraints">
+                                        <exclude reference="d9G-Xb-Ph8"/>
+                                    </mask>
+                                </variation>
+                                <variation key="heightClass=regular">
+                                    <mask key="constraints">
+                                        <include reference="d9G-Xb-Ph8"/>
+                                    </mask>
+                                </variation>
                                 <connections>
                                     <action selector="generateAction:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="R28-k6-uOs"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="eN2-PX-moT">
+                            <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="eN2-PX-moT">
                                 <rect key="frame" x="224" y="123" width="152" height="33"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="152" id="Fu1-VO-4sL"/>
+                                    <constraint firstAttribute="width" constant="152" id="Ksv-23-foL"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <state key="normal" title="扫描和读取二维码"/>
+                                <variation key="default">
+                                    <mask key="constraints">
+                                        <exclude reference="Ksv-23-foL"/>
+                                    </mask>
+                                </variation>
+                                <variation key="heightClass=regular">
+                                    <mask key="constraints">
+                                        <include reference="Ksv-23-foL"/>
+                                    </mask>
+                                </variation>
                                 <connections>
                                     <action selector="scanoAction" destination="vXZ-lx-hvc" eventType="touchUpInside" id="pye-8u-hU0"/>
                                 </connections>
                             </button>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="codeImage" translatesAutoresizingMaskIntoConstraints="NO" id="GRJ-XS-KQK">
-                                <rect key="frame" x="200" y="244" width="200" height="200"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="200" id="Rpv-nI-1na"/>
-                                    <constraint firstAttribute="height" constant="200" id="Ych-e4-P5F"/>
-                                </constraints>
-                            </imageView>
                         </subviews>
                         <color key="backgroundColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.95686274510000002" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
-                            <constraint firstItem="vvN-kG-Si5" firstAttribute="centerX" secondItem="kh9-bI-dsS" secondAttribute="centerX" id="0XQ-xE-UPa"/>
-                            <constraint firstItem="vvN-kG-Si5" firstAttribute="top" secondItem="eN2-PX-moT" secondAttribute="bottom" constant="24" id="2Ct-yC-taV"/>
-                            <constraint firstItem="GRJ-XS-KQK" firstAttribute="centerX" secondItem="kh9-bI-dsS" secondAttribute="centerX" id="4SW-w6-rtl"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="eN2-PX-moT" secondAttribute="trailing" constant="204" id="I4R-SO-nwb"/>
-                            <constraint firstItem="eN2-PX-moT" firstAttribute="height" secondItem="vvN-kG-Si5" secondAttribute="height" id="Tkp-oV-Uvr"/>
-                            <constraint firstItem="eN2-PX-moT" firstAttribute="top" secondItem="TEg-IT-UT7" secondAttribute="bottom" constant="59" id="Uv6-fk-c1O"/>
-                            <constraint firstItem="eN2-PX-moT" firstAttribute="centerX" secondItem="kh9-bI-dsS" secondAttribute="centerX" id="q8B-ZA-3By"/>
-                            <constraint firstItem="GRJ-XS-KQK" firstAttribute="top" secondItem="vvN-kG-Si5" secondAttribute="bottom" constant="31" id="yNm-vh-kE4"/>
+                            <constraint firstItem="eN2-PX-moT" firstAttribute="centerX" secondItem="kh9-bI-dsS" secondAttribute="centerX" id="HFH-c1-mX0"/>
+                            <constraint firstItem="vvN-kG-Si5" firstAttribute="top" secondItem="eN2-PX-moT" secondAttribute="bottom" constant="24" id="Ov1-UV-50k"/>
+                            <constraint firstItem="eN2-PX-moT" firstAttribute="top" secondItem="TEg-IT-UT7" secondAttribute="bottom" constant="59" id="cSD-eE-zQ7"/>
+                            <constraint firstItem="vvN-kG-Si5" firstAttribute="centerX" secondItem="kh9-bI-dsS" secondAttribute="centerX" id="cxe-K7-Qjq"/>
+                            <constraint firstItem="GRJ-XS-KQK" firstAttribute="top" secondItem="vvN-kG-Si5" secondAttribute="bottom" constant="31" id="lgF-Il-IYJ"/>
+                            <constraint firstItem="GRJ-XS-KQK" firstAttribute="centerX" secondItem="kh9-bI-dsS" secondAttribute="centerX" id="rWz-or-VDT"/>
                         </constraints>
+                        <variation key="default">
+                            <mask key="constraints">
+                                <exclude reference="HFH-c1-mX0"/>
+                                <exclude reference="cSD-eE-zQ7"/>
+                                <exclude reference="Ov1-UV-50k"/>
+                                <exclude reference="cxe-K7-Qjq"/>
+                                <exclude reference="lgF-Il-IYJ"/>
+                                <exclude reference="rWz-or-VDT"/>
+                            </mask>
+                        </variation>
+                        <variation key="heightClass=regular">
+                            <mask key="constraints">
+                                <include reference="HFH-c1-mX0"/>
+                                <include reference="cSD-eE-zQ7"/>
+                                <include reference="Ov1-UV-50k"/>
+                                <include reference="cxe-K7-Qjq"/>
+                                <include reference="lgF-Il-IYJ"/>
+                                <include reference="rWz-or-VDT"/>
+                            </mask>
+                        </variation>
                     </view>
                     <navigationItem key="navigationItem" id="hSd-sx-gU2"/>
                     <connections>

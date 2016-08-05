@@ -14,8 +14,9 @@
 @property (nonatomic, copy) void (^SYQRCodeCancleBlock) (SYQRCodeViewController *);
 
 /**SYQRCodeSuncessBlock */
-@property (nonatomic, copy) void (^SYQRCodeSuncessBlock) (SYQRCodeViewController *,NSString *);
+@property (nonatomic, copy) void (^SYQRCodeSuncessBlock) (SYQRCodeViewController *, NSString *);
 
 /**SYQRCodeFailBlock */
 @property (nonatomic, copy) void (^SYQRCodeFailBlock) (SYQRCodeViewController *);
+
 @end
