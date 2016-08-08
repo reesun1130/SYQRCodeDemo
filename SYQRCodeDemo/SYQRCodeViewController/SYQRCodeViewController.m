@@ -44,11 +44,9 @@
     }
     
     //延迟加载，提高用户体验
-    [self performSelector:@selector(prepareDisplayScanView) withObject:nil afterDelay:.01];
-}
-
-- (void)prepareDisplayScanView {
-    [self performSelectorOnMainThread:@selector(displayScanView) withObject:nil waitUntilDone:YES];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(.01 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self displayScanView];
+    });
 }
 
 - (void)displayScanView {
