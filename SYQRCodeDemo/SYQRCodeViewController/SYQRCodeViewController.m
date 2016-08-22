@@ -44,7 +44,7 @@
     }
     
     //延迟加载，提高用户体验
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(.01 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(.02 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [self displayScanView];
     });
 }
@@ -279,6 +279,8 @@
 #pragma mark -AVCaptureMetadataOutputObjectsDelegate
 
 - (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputMetadataObjects:(NSArray *)metadataObjects fromConnection:(AVCaptureConnection *)connection {
+    [self stopSYQRCodeReading];
+
     BOOL fail = YES;
     
     //扫描结果
@@ -312,7 +314,6 @@
             self.SYQRCodeFailBlock(self);
         }
     }
-    [self stopSYQRCodeReading];
 }
 
 #pragma mark - startSYQRCodeReading
@@ -396,7 +397,6 @@
     
     //NSLog(@"_line.frame.origin.y==%f",_line.frame.origin.y);
 }
-
 
 - (void)dealloc {
     NSLog(@"SYQRCodeViewController dealloc");
