@@ -2,23 +2,15 @@
 //  SYQRCodeViewController.m
 //  SYQRCodeDemo
 //
-//  Created by sunbb on 15-1-9.
-//  Copyright (c) 2015年 SY. All rights reserved.
+//  Created by ree.sun on 15-1-9.
+//  Copyright © Ree Sun <ree.sun.cn@hotmail.com || 1507602555@qq.com>
 //
 
 #import "SYQRCodeViewController.h"
 #import <AVFoundation/AVFoundation.h>
-
-//设备宽/高/坐标
-#define SCREEN_WIDTH [UIScreen mainScreen].bounds.size.width
-#define SCREEN_HEIGHT [UIScreen mainScreen].bounds.size.height
-#define SCREEN_FRAME [UIScreen mainScreen].bounds
-
-static const float kLineMinY = 185;
-static const float kLineMaxY = 385;
-static const float kReaderViewWidth = 200;
-static const float kReaderViewHeight = 200;
-static const float BTN_TAG = 100000;
+#import <ZXingObjC/ZXingObjC.h>
+#import "SYQRCodeOverlayView.h"
+#import "AVCaptureVideoPreviewLayer+Helper.h"
 
 @interface SYQRCodeViewController () <AVCaptureMetadataOutputObjectsDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate>
 
@@ -27,200 +19,154 @@ static const float BTN_TAG = 100000;
 @property (nonatomic, strong) AVCaptureVideoPreviewLayer *qrVideoPreviewLayer;
 @property (nonatomic, strong) UIImageView *line;
 @property (nonatomic, strong) NSTimer *lineTimer;
+@property (nonatomic, strong) UILabel *tipsLabel;
+@property (nonatomic, strong) UIActivityIndicatorView *vActivityIndicator;
 
 @end
 
 @implementation SYQRCodeViewController
 
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    self.view.backgroundColor = [UIColor whiteColor];
+    self.view.backgroundColor = [UIColor blackColor];
+    self.title = @"Scan";
+    
+    _vActivityIndicator = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake((SCREEN_WIDTH - 100) / 2.0, (SCREEN_HEIGHT - 164)  / 2.0, 100, 100)];
+    _vActivityIndicator.hidesWhenStopped = YES;
+    _vActivityIndicator.backgroundColor = [UIColor redColor];
+    [_vActivityIndicator startAnimating];
+    [self.view addSubview:_vActivityIndicator];
+
+    //权限受限
+    if (![self canAccessAVCaptureDeviceForMediaType:AVMediaTypeVideo]) {
+        [self showUnAuthorizedTips:YES];
+    }
+    
+    //延迟加载，提高用户体验
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(.02 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self displayScanView];
+    });
+}
+
+- (void)displayScanView {
+    //没权限显示权限受限
+    if ([self canAccessAVCaptureDeviceForMediaType:AVMediaTypeVideo] && [self loadCaptureUI]) {
+        [self setOverlayPickerView];
+        [self startSYQRCodeReading];
+    }
+    else {
+        [self showUnAuthorizedTips:YES];
+    }
+}
+
+- (BOOL)canAccessAVCaptureDeviceForMediaType:(NSString *)mediaType {
+    __block BOOL canAccess = NO;
+    
+    AVAuthorizationStatus status = [AVCaptureDevice authorizationStatusForMediaType:mediaType];
+    switch (status) {
+        case AVAuthorizationStatusNotDetermined: {
+            [AVCaptureDevice requestAccessForMediaType:mediaType completionHandler:^(BOOL granted) {
+                canAccess = granted;
+            }];
+            break;
+        }
+        case AVAuthorizationStatusAuthorized: {
+            canAccess = YES;
+            break;
+        }
+        case AVAuthorizationStatusDenied:
+        case AVAuthorizationStatusRestricted:
+            canAccess = NO;
+            break;
+        default:
+            break;
+    }
+    
+    return canAccess;
+}
+
+- (void)showAlertWithTitle:(NSString *)title
+                   message:(NSString *)message {
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title
+                                                    message:message
+                                                   delegate:nil
+                                          cancelButtonTitle:@"知道了"
+                                          otherButtonTitles:nil, nil];
+    [alert show];
+}
+
+- (void)showUnAuthorizedTips:(BOOL)flag {
+    if (!_tipsLabel) {
+        _tipsLabel = [[UILabel alloc] init];
+        _tipsLabel.frame = CGRectMake(8, 64, self.view.frame.size.width - 16, 300);
+        _tipsLabel.textAlignment = NSTextAlignmentCenter;
+        _tipsLabel.numberOfLines = 0;
+        _tipsLabel.font = [UIFont systemFontOfSize:16];
+        _tipsLabel.textColor = [UIColor blackColor];
+        _tipsLabel.userInteractionEnabled = YES;
+        NSString *appName = [[NSBundle mainBundle].infoDictionary valueForKey:@"CFBundleDisplayName"];
+        if (!appName) appName = [[NSBundle mainBundle].infoDictionary valueForKey:@"CFBundleName"];
+        _tipsLabel.text = [NSString stringWithFormat:@"请在%@的\"设置-隐私-相机\"选项中，\r允许%@访问你的相机。",[UIDevice currentDevice].model,appName];
+        [self.view addSubview:_tipsLabel];
+        
+        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(_handleTipsTap)];
+        [_tipsLabel addGestureRecognizer:tap];
+    }
+    
+    _tipsLabel.hidden = !flag;
+    [_vActivityIndicator stopAnimating];
+}
+
+#warning 使用openURL前请添加scheme：prefs
+- (void)_handleTipsTap {
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:kIOS8_OR_LATER ? UIApplicationOpenSettingsURLString : @"prefs:root"]];
+}
+
+- (BOOL)loadCaptureUI {
     _captureDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
     
     if (![_captureDevice hasTorch]) {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"当前设备没有闪光灯" delegate:nil cancelButtonTitle:@"知道了" otherButtonTitles:nil, nil];
-        [alert show];
+        [self showAlertWithTitle:@"提示" message:@"当前设备没有闪光灯"];
     }
-    self.title = @"Scan";
-    [self initUI];
-    [self setOverlayPickerView];
-    [self startSYQRCodeReading];
+
+    _qrVideoPreviewLayer = [AVCaptureVideoPreviewLayer captureVideoPreviewLayerWithFrame:self.view.bounds rectOfInterest:[self getReaderViewBoundsWithSize:CGSizeMake(kReaderViewWidth, kReaderViewHeight)] captureDevice:_captureDevice metadataObjectsDelegate:self];
+    
+    if (!_qrVideoPreviewLayer) {
+        return NO;
+    }
+    _qrSession = _qrVideoPreviewLayer.session;
+    
+    return YES;
 }
 
-
-
-- (void)initUI
-{
-    AVCaptureDevice *device = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
-    
-    //摄像头判断
-    NSError *error = nil;
-    
-    AVCaptureDeviceInput *input = [AVCaptureDeviceInput deviceInputWithDevice:device error:&error];
-    
-    if (error){
-        NSLog(@"没有摄像头-%@", error.localizedDescription);
-        return;
-    }
-    
-    AVCaptureMetadataOutput *output = [[AVCaptureMetadataOutput alloc] init];
-    
-    //设置输出的代理
-    //使用主线程队列，相应比较同步，使用其他队列，相应不同步，容易让用户产生不好的体验
-    [output setMetadataObjectsDelegate:self queue:dispatch_get_main_queue()];
-    [output setRectOfInterest:[self getReaderViewBoundsWithSize:CGSizeMake(kReaderViewWidth, kReaderViewHeight)]];
-    
-    //拍摄会话
-    AVCaptureSession *session = [[AVCaptureSession alloc] init];
-    
-    // 读取质量，质量越高，可读取小尺寸的二维码
-    if ([session canSetSessionPreset:AVCaptureSessionPreset1920x1080]){
-        [session setSessionPreset:AVCaptureSessionPreset1920x1080];
-        
-    }else if ([session canSetSessionPreset:AVCaptureSessionPreset1280x720]){
-        
-        [session setSessionPreset:AVCaptureSessionPreset1280x720];
-    }else{
-        [session setSessionPreset:AVCaptureSessionPresetPhoto];
-    }
-    
-    if ([session canAddInput:input])
-    {
-        [session addInput:input];
-    }
-    
-    if ([session canAddOutput:output])
-    {
-        [session addOutput:output];
-    }
-    
-    //设置输出的格式
-    //一定要先设置会话的输出为output之后，再指定输出的元数据类型
-    [output setMetadataObjectTypes:@[AVMetadataObjectTypeQRCode]];
-    
-    //设置预览图层
-    AVCaptureVideoPreviewLayer *preview = [AVCaptureVideoPreviewLayer layerWithSession:session];
-    
-    //设置preview图层的属性
-    //preview.borderColor = [UIColor redColor].CGColor;
-    //preview.borderWidth = 1.5;
-    [preview setVideoGravity:AVLayerVideoGravityResizeAspectFill];
-    
-    //设置preview图层的大小
-    preview.frame = self.view.layer.bounds;
-    //[preview setFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
-    
-    //将图层添加到视图的图层
-    [self.view.layer insertSublayer:preview atIndex:0];
-    self.qrVideoPreviewLayer = preview;
-    self.qrSession = session;
-}
-
-- (CGRect)getReaderViewBoundsWithSize:(CGSize)asize
-{
+- (CGRect)getReaderViewBoundsWithSize:(CGSize)asize {
     return CGRectMake(kLineMinY / SCREEN_HEIGHT, ((SCREEN_WIDTH - asize.width) / 2.0) / SCREEN_WIDTH, asize.height / SCREEN_HEIGHT, asize.width / SCREEN_WIDTH);
 }
 
-- (void)setOverlayPickerView
-{
-    //画中间的基准线
-    _line = [[UIImageView alloc] initWithFrame:CGRectMake((SCREEN_WIDTH - 300) / 2.0, kLineMinY, 300, 12 * 300 / 320.0)];
-    [_line setImage:[UIImage imageNamed:@"QRCodeLine"]];
-    [self.view addSubview:_line];
+- (void)setOverlayPickerView {
+    __weak SYQRCodeViewController *weakSelf = self;
     
-    //最上部view
-    UIView* upView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, kLineMinY)];//80
-    upView.alpha = 0.3;
-    upView.backgroundColor = [UIColor blackColor];
-    [self.view addSubview:upView];
+    SYQRCodeOverlayView *vOverlayer = [[SYQRCodeOverlayView alloc] initWithFrame:self.view.bounds basedLayer:_qrVideoPreviewLayer];
+    vOverlayer.SYQRCodeOverlayViewBtnAction = ^(UIButton *btn){
+        [weakSelf btnClick:btn];
+    };
+    [self.view addSubview:vOverlayer];
     
-    //左侧的view
-    UIView *leftView = [[UIView alloc] initWithFrame:CGRectMake(0, kLineMinY, (SCREEN_WIDTH - kReaderViewWidth) / 2.0, kReaderViewHeight)];
-    leftView.alpha = 0.3;
-    leftView.backgroundColor = [UIColor blackColor];
-    [self.view addSubview:leftView];
+    //添加过渡动画，类似微信
+    [self.view.layer insertSublayer:_qrVideoPreviewLayer atIndex:0];
     
-    //右侧的view
-    UIView *rightView = [[UIView alloc] initWithFrame:CGRectMake(SCREEN_WIDTH - CGRectGetMaxX(leftView.frame), kLineMinY, CGRectGetMaxX(leftView.frame), kReaderViewHeight)];
-    rightView.alpha = 0.3;
-    rightView.backgroundColor = [UIColor blackColor];
-    [self.view addSubview:rightView];
+    CAKeyframeAnimation *animationLayer = [CAKeyframeAnimation animationWithKeyPath:@"transform"];
+    animationLayer.duration = 0.1;
     
-    CGFloat space_h = SCREEN_HEIGHT - kLineMaxY;
-    
-    //底部view
-    UIView *downView = [[UIView alloc] initWithFrame:CGRectMake(0, kLineMaxY, SCREEN_WIDTH, space_h)];
-    downView.alpha = 0.3;
-    downView.backgroundColor = [UIColor blackColor];
-    [self.view addSubview:downView];
-    
-    //四个边角
-    UIImage *cornerImage = [UIImage imageNamed:@"QRCodeTopLeft"];
-    
-    //左侧的view
-    UIImageView *leftView_image = [[UIImageView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(leftView.frame) - cornerImage.size.width / 2.0, CGRectGetMaxY(upView.frame) - cornerImage.size.height / 2.0, cornerImage.size.width, cornerImage.size.height)];
-    leftView_image.image = cornerImage;
-    [self.view addSubview:leftView_image];
-    
-    cornerImage = [UIImage imageNamed:@"QRCodeTopRight"];
-    
-    //右侧的view
-    UIImageView *rightView_image = [[UIImageView alloc] initWithFrame:CGRectMake(CGRectGetMinX(rightView.frame) - cornerImage.size.width / 2.0, CGRectGetMaxY(upView.frame) - cornerImage.size.height / 2.0, cornerImage.size.width, cornerImage.size.height)];
-    rightView_image.image = cornerImage;
-    [self.view addSubview:rightView_image];
-    
-    cornerImage = [UIImage imageNamed:@"QRCodebottomLeft"];
-    
-    //底部view
-    UIImageView *downView_image = [[UIImageView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(leftView.frame) - cornerImage.size.width / 2.0, CGRectGetMinY(downView.frame) - cornerImage.size.height / 2.0, cornerImage.size.width, cornerImage.size.height)];
-    downView_image.image = cornerImage;
-    //downView.backgroundColor = [UIColor blackColor];
-    [self.view addSubview:downView_image];
-    
-    cornerImage = [UIImage imageNamed:@"QRCodebottomRight"];
-    
-    UIImageView *downViewRight_image = [[UIImageView alloc] initWithFrame:CGRectMake(CGRectGetMinX(rightView.frame) - cornerImage.size.width / 2.0, CGRectGetMinY(downView.frame) - cornerImage.size.height / 2.0, cornerImage.size.width, cornerImage.size.height)];
-    downViewRight_image.image = cornerImage;
-    //downView.backgroundColor = [UIColor blackColor];
-    [self.view addSubview:downViewRight_image];
-    
-    UILabel *labIntroudction = [[UILabel alloc] init];
-    labIntroudction.backgroundColor = [UIColor clearColor];
-    CGFloat padding = (SCREEN_WIDTH - kReaderViewWidth)/2;
-    labIntroudction.frame = CGRectMake(padding, CGRectGetMinY(downView.frame) + 25, kReaderViewWidth, 20);
-    labIntroudction.textAlignment = NSTextAlignmentCenter;
-    labIntroudction.font = [UIFont boldSystemFontOfSize:13.0];
-    labIntroudction.textColor = [UIColor whiteColor];
-    labIntroudction.text = @"将二维码置于框内,即可自动扫描";
-    [self.view addSubview:labIntroudction];
-    
-    CGFloat btnWidth = (CGRectGetWidth(labIntroudction.frame) - 40)/2;
-    CGFloat btnHeight = 35.0;
-    NSArray *btnTitle =@[@"Album", @"Open"];
-    for (NSInteger i = 0; i < btnTitle.count; i ++) {
-        UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
-        
-        btn.frame = CGRectMake((btnWidth + 40) * i + padding, CGRectGetMaxY(labIntroudction.frame) + 2, btnWidth, btnHeight);
-        [btn setTitle:btnTitle[i] forState:UIControlStateNormal];
-        [btn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-        btn.tag = i + BTN_TAG;
-        if (btn.tag == BTN_TAG + 1) {
-            [btn setTitle:@"Closed" forState:UIControlStateSelected];
-            btn.selected = NO;
-        }
-        [btn addTarget:self action:@selector(btnClick:) forControlEvents:UIControlEventTouchUpInside];
-        [self.view addSubview:btn];
-    }
-    
-    UIView *scanCropView = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(leftView.frame) - 1,kLineMinY,self.view.frame.size.width - 2 * CGRectGetMaxX(leftView.frame) + 2, kReaderViewHeight + 2)];
-    scanCropView.layer.borderColor = [UIColor greenColor].CGColor;
-    scanCropView.layer.borderWidth = 2.0;
-    [self.view addSubview:scanCropView];
+    NSMutableArray *values = [NSMutableArray array];
+    [values addObject:[NSValue valueWithCATransform3D:CATransform3DMakeScale(0.1, 0.1, 1.0)]];
+    [values addObject:[NSValue valueWithCATransform3D:CATransform3DMakeScale(1.0, 1.0, 1.0)]];
+    animationLayer.values = values;
+    [_qrVideoPreviewLayer addAnimation:animationLayer forKey:nil];
 }
 
-- (void)initImagePickerController{
+- (void)gotoImagePickerController {
     UIImagePickerControllerSourceType sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
     if (![UIImagePickerController isSourceTypeAvailable: UIImagePickerControllerSourceTypeCamera]) {
         sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
@@ -228,20 +174,17 @@ static const float BTN_TAG = 100000;
     
     UIImagePickerController *picker = [[UIImagePickerController alloc] init];
     picker.delegate = self;
-    picker.allowsEditing = YES;
+    picker.allowsEditing = NO;
     picker.sourceType = sourceType;
     [self presentViewController:picker animated:YES completion:nil];
-
 }
 
-- (void)turnOnTorch:(BOOL)on
-{
+- (void)turnOnTorch:(BOOL)on {
     [_captureDevice lockForConfiguration:nil];
     if (on) {
-        
         [_captureDevice setTorchMode:AVCaptureTorchModeOn];
-    }else {
-        
+    }
+    else {
         [_captureDevice setTorchMode: AVCaptureTorchModeOff];
     }
     
@@ -250,18 +193,18 @@ static const float BTN_TAG = 100000;
 
 
 #pragma mark - Button Event
-- (void)btnClick:(UIButton *)sender{
-    
-    //Album
+
+- (void)btnClick:(UIButton *)sender {
+    //Album 读取
     if (sender.tag == BTN_TAG) {
-        
-        [self initImagePickerController];
-        
-    }else if(sender.tag == BTN_TAG + 1){
+        [self gotoImagePickerController];
+    }
+    else if(sender.tag == BTN_TAG + 1) {
         //Touch
         if (sender.selected) {
             [self turnOnTorch:NO];
-        }else{
+        }
+        else {
             [self turnOnTorch:YES];
         }
         
@@ -270,117 +213,158 @@ static const float BTN_TAG = 100000;
 }
 
 #pragma mark - UINavigationControllerDelegate
-- (void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)viewController animated:(BOOL)animated{
-    
+
+- (void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)viewController animated:(BOOL)animated {
     viewController.navigationItem.rightBarButtonItem.tintColor = [UIColor whiteColor];
 }
 
 #pragma mark -UIImagePickerControllerDelegate
-- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info{
+
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
     [picker dismissViewControllerAnimated:YES completion:nil];
     
-    UIImage *image = [info objectForKey:UIImagePickerControllerOriginalImage];
-
-    NSLog(@"%@", image);
+    UIImage *loadImage= [info objectForKey:UIImagePickerControllerOriginalImage];
+    
+    NSLog(@"%@", loadImage);
+    
+    NSString *des = @"";
+    
+    if (kIOS8_OR_LATER) {
+        // if you only iOS >= 8.0 you can use system(this) method
+        CIContext *context = [CIContext contextWithOptions:nil];
+        CIDetector *detector = [CIDetector detectorOfType:CIDetectorTypeQRCode context:context options:@{CIDetectorAccuracy:CIDetectorAccuracyHigh}];
+        CIImage *image = [CIImage imageWithCGImage:loadImage.CGImage];
+        NSArray *features = [detector featuresInImage:image];
+        
+        if (features.count > 0) {
+            CIQRCodeFeature *feature = [features firstObject];
+            
+            if (feature.messageString.length > 0) {
+                des = [des stringByAppendingString:feature.messageString];
+            }
+        }
+    }
+    else {
+#warning 一些网站:http://sauchye.com 无法识别 bug
+        CGImageRef imageToDecode = loadImage.CGImage;
+        ZXLuminanceSource *source = [[ZXCGImageLuminanceSource alloc] initWithCGImage:imageToDecode];
+        ZXBinaryBitmap *bitmap = [ZXBinaryBitmap binaryBitmapWithBinarizer:[ZXHybridBinarizer binarizerWithSource:source]];
+        
+        NSError *error = nil;
+        
+        ZXDecodeHints *hints = [ZXDecodeHints hints];
+        ZXMultiFormatReader *reader = [ZXMultiFormatReader reader];
+        ZXResult *result = [reader decode:bitmap
+                                    hints:hints
+                                    error:&error];
+        
+        if (result.text.length > 0) {
+            des = [des stringByAppendingString:result.text];
+        }
+    }
+    
+    if (des.length > 0) {
+        NSLog(@"contents =%@",des);
+        [self showAlertWithTitle:nil message:des];
+    }
+    else {
+        [self showAlertWithTitle:nil message:@"解析失败"];
+    }
 }
 
-- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker
-{
+- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
     [picker dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark -AVCaptureMetadataOutputObjectsDelegate
-- (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputMetadataObjects:(NSArray *)metadataObjects fromConnection:(AVCaptureConnection *)connection
-{
+
+- (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputMetadataObjects:(NSArray *)metadataObjects fromConnection:(AVCaptureConnection *)connection {
+    [self stopSYQRCodeReading];
+
+    BOOL fail = YES;
+    
     //扫描结果
-    if (metadataObjects.count > 0)
-    {
-        [self stopSYQRCodeReading];
-        
-        AVMetadataMachineReadableCodeObject *obj = metadataObjects[0];
-        
-        if (obj.stringValue && ![obj.stringValue isEqualToString:@""] && obj.stringValue.length > 0)
-        {
-            NSLog(@"---------%@",obj.stringValue);
+    if (metadataObjects.count > 0) {
+        AVMetadataMachineReadableCodeObject *responseObj = metadataObjects[0];
+        //        //org.iso.QRCode
+        //        if ([responseObj.type containsString:@"QRCode"]) {
+        //
+        //        }
+        if (responseObj) {
+            NSString *strResponse = responseObj.stringValue;
             
-            if ([obj.stringValue containsString:@"http"])
-            {
-                if (self.SYQRCodeSuncessBlock) {
-                    self.SYQRCodeSuncessBlock(self,obj.stringValue);
+            if (strResponse && ![strResponse isEqualToString:@""] && strResponse.length > 0) {
+                NSLog(@"qrcodestring==%@",strResponse);
+                
+                if ([strResponse hasPrefix:@"http"]) {
+                    fail = NO;
+#warning scan success提示
+                    AudioServicesPlaySystemSound(1360);
+                    
+                    if (self.SYQRCodeSuncessBlock) {
+                        self.SYQRCodeSuncessBlock(self, strResponse);
+                    }
                 }
-            }
-            else
-            {
-                if (self.SYQRCodeFailBlock) {
-                    self.SYQRCodeFailBlock(self);
-                }
-            }
-        }
-        else
-        {
-            if (self.SYQRCodeFailBlock) {
-                self.SYQRCodeFailBlock(self);
             }
         }
     }
-    else
-    {
+    
+    if (fail) {
         if (self.SYQRCodeFailBlock) {
             self.SYQRCodeFailBlock(self);
         }
     }
 }
 
+#pragma mark - startSYQRCodeReading
 
-#pragma mark -
-#pragma mark 交互事件
+- (void)startSYQRCodeReading {
+    [_vActivityIndicator stopAnimating];
 
-- (void)startSYQRCodeReading
-{
+    if (!_line) {
+        //画中间的基准线
+        _line = [[UIImageView alloc] initWithFrame:CGRectMake((SCREEN_WIDTH - 300) / 2.0, kLineMinY, 300, 12 * 300 / 320.0)];
+        [_line setImage:[UIImage imageNamed:@"QRCodeLine"]];
+        [_qrVideoPreviewLayer addSublayer:_line.layer];
+    }
+
     _lineTimer = [NSTimer scheduledTimerWithTimeInterval:1.0 / 20 target:self selector:@selector(animationLine) userInfo:nil repeats:YES];
-    
-    [self.qrSession startRunning];
+    [_qrSession startRunning];
     
     NSLog(@"start reading");
 }
 
-- (void)stopSYQRCodeReading
-{
-    if (_lineTimer)
-    {
+- (void)stopSYQRCodeReading {
+    if (_lineTimer) {
         [_lineTimer invalidate];
         _lineTimer = nil;
     }
     
-    [self.qrSession stopRunning];
+    if (_qrSession) {
+        [_qrSession stopRunning];
+        _qrSession = nil;
+    }
     
     NSLog(@"stop reading");
 }
 
-//取消扫描
-- (void)cancleSYQRCodeReading
-{
+- (void)cancleSYQRCodeReading {
     [self stopSYQRCodeReading];
     
-    if (self.SYQRCodeCancleBlock)
-    {
+    if (self.SYQRCodeCancleBlock) {
         self.SYQRCodeCancleBlock(self);
     }
     NSLog(@"cancle reading");
 }
 
+#pragma mark - animationLine
 
-#pragma mark -
-#pragma mark 上下滚动交互线
-
-- (void)animationLine
-{
+- (void)animationLine {
     __block CGRect frame = _line.frame;
     
     static BOOL flag = YES;
     
-    if (flag)
-    {
+    if (flag) {
         frame.origin.y = kLineMinY;
         flag = NO;
         
@@ -391,29 +375,22 @@ static const float BTN_TAG = 100000;
             
         } completion:nil];
     }
-    else
-    {
-        if (_line.frame.origin.y >= kLineMinY)
-        {
-            if (_line.frame.origin.y >= kLineMaxY - 12)
-            {
+    else {
+        if (_line.frame.origin.y >= kLineMinY) {
+            if (_line.frame.origin.y >= kLineMaxY - 12) {
                 frame.origin.y = kLineMinY;
                 _line.frame = frame;
                 
                 flag = YES;
             }
-            else
-            {
+            else {
                 [UIView animateWithDuration:1.0 / 20 animations:^{
-                    
                     frame.origin.y += 5;
                     _line.frame = frame;
-                    
                 } completion:nil];
             }
         }
-        else
-        {
+        else {
             flag = !flag;
         }
     }
@@ -421,27 +398,9 @@ static const float BTN_TAG = 100000;
     //NSLog(@"_line.frame.origin.y==%f",_line.frame.origin.y);
 }
 
-
-- (void)dealloc
-{
-    if (_qrSession) {
-        [_qrSession stopRunning];
-        _qrSession = nil;
-    }
-    
-    if (_qrVideoPreviewLayer) {
-        _qrVideoPreviewLayer = nil;
-    }
-    
-    if (_line) {
-        _line = nil;
-    }
-    
-    if (_lineTimer)
-    {
-        [_lineTimer invalidate];
-        _lineTimer = nil;
-    }
+- (void)dealloc {
+    NSLog(@"SYQRCodeViewController dealloc");
+    [self stopSYQRCodeReading];
 }
 
 @end
