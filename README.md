@@ -1,6 +1,6 @@
-# SYQRCodeDemo
+# QRCode Demo
 
-SYQRCode:仿微信二维码扫描
+SYQRCodeDemo:仿微信二维码扫描
 
 ### Latest
 * 修复bug，优化实现和用户体验，更加简单易用（新增类似微信的打开动画效果）
