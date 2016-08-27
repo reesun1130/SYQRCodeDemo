@@ -20,6 +20,9 @@
 		1C409F141D7042920047B6FA /* QRCodeTopRight@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C409F051D7042920047B6FA /* QRCodeTopRight@3x.png */; };
 		1C409F151D7042920047B6FA /* SYQRCodeOverlayView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C409F071D7042920047B6FA /* SYQRCodeOverlayView.m */; };
 		1C409F161D7042920047B6FA /* SYQRCodeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C409F091D7042920047B6FA /* SYQRCodeViewController.m */; };
+		3367D1DB1D71802000ED2F27 /* ReadQRCodeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3367D1D91D71802000ED2F27 /* ReadQRCodeViewController.m */; };
+		3367D1DC1D71802000ED2F27 /* ReadQRCodeViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3367D1DA1D71802000ED2F27 /* ReadQRCodeViewController.xib */; };
+		33688DED1D71CB4D0085E242 /* test.png in Resources */ = {isa = PBXBuildFile; fileRef = 33688DEC1D71CB4D0085E242 /* test.png */; };
 		B27F395543CF282583ED875B /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E6705B7F689DF5A8AAC0E016 /* libPods.a */; };
 		CFF5942C1A5BC9040090BF13 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = CFF5942B1A5BC9040090BF13 /* main.m */; };
 		CFF5942F1A5BC9040090BF13 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = CFF5942E1A5BC9040090BF13 /* AppDelegate.m */; };
@@ -47,6 +50,10 @@
 		1C409F071D7042920047B6FA /* SYQRCodeOverlayView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SYQRCodeOverlayView.m; sourceTree = "<group>"; };
 		1C409F081D7042920047B6FA /* SYQRCodeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SYQRCodeViewController.h; sourceTree = "<group>"; };
 		1C409F091D7042920047B6FA /* SYQRCodeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SYQRCodeViewController.m; sourceTree = "<group>"; };
+		3367D1D81D71802000ED2F27 /* ReadQRCodeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReadQRCodeViewController.h; sourceTree = "<group>"; };
+		3367D1D91D71802000ED2F27 /* ReadQRCodeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReadQRCodeViewController.m; sourceTree = "<group>"; };
+		3367D1DA1D71802000ED2F27 /* ReadQRCodeViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ReadQRCodeViewController.xib; sourceTree = "<group>"; };
+		33688DEC1D71CB4D0085E242 /* test.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = test.png; sourceTree = "<group>"; };
 		5CB593ACF081017BF20FB661 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		CFF594261A5BC9040090BF13 /* SYQRCodeDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SYQRCodeDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CFF5942A1A5BC9040090BF13 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -139,9 +146,13 @@
 				CFF5942E1A5BC9040090BF13 /* AppDelegate.m */,
 				CFF594301A5BC9040090BF13 /* ViewController.h */,
 				CFF594311A5BC9040090BF13 /* ViewController.m */,
+				3367D1D81D71802000ED2F27 /* ReadQRCodeViewController.h */,
+				3367D1D91D71802000ED2F27 /* ReadQRCodeViewController.m */,
+				3367D1DA1D71802000ED2F27 /* ReadQRCodeViewController.xib */,
 				CFF594331A5BC9040090BF13 /* Main.storyboard */,
 				CFF594361A5BC9040090BF13 /* Images.xcassets */,
 				CFF594381A5BC9040090BF13 /* LaunchScreen.xib */,
+				33688DEC1D71CB4D0085E242 /* test.png */,
 				CFF594291A5BC9040090BF13 /* Supporting Files */,
 			);
 			path = SYQRCodeDemo;
@@ -184,7 +195,7 @@
 		CFF5941E1A5BC9040090BF13 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0610;
+				LastUpgradeCheck = 0730;
 				ORGANIZATIONNAME = SY;
 				TargetAttributes = {
 					CFF594251A5BC9040090BF13 = {
@@ -225,6 +236,8 @@
 				CFF594371A5BC9040090BF13 /* Images.xcassets in Resources */,
 				1C409F101D7042920047B6FA /* QRCodeLine@3x.png in Resources */,
 				1C409F0C1D7042920047B6FA /* QRCodebottomLeft@3x.png in Resources */,
+				3367D1DC1D71802000ED2F27 /* ReadQRCodeViewController.xib in Resources */,
+				33688DED1D71CB4D0085E242 /* test.png in Resources */,
 				1C409F131D7042920047B6FA /* QRCodeTopRight@2x.png in Resources */,
 				1C409F121D7042920047B6FA /* QRCodeTopLeft@3x.png in Resources */,
 				1C409F111D7042920047B6FA /* QRCodeTopLeft@2x.png in Resources */,
@@ -271,6 +284,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3367D1DB1D71802000ED2F27 /* ReadQRCodeViewController.m in Sources */,
 				1C409F151D7042920047B6FA /* SYQRCodeOverlayView.m in Sources */,
 				CFF594321A5BC9040090BF13 /* ViewController.m in Sources */,
 				1C409F161D7042920047B6FA /* SYQRCodeViewController.m in Sources */,
@@ -322,6 +336,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;

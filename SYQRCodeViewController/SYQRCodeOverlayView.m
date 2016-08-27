@@ -96,30 +96,6 @@
     labIntroudction.textColor = [UIColor whiteColor];
     labIntroudction.text = @"将二维码置于框内,即可自动扫描";
     [self addSubview:labIntroudction];
-    
-    CGFloat btnWidth = (CGRectGetWidth(labIntroudction.frame) - 40)/2;
-    CGFloat btnHeight = 35.0;
-    NSArray *btnTitle =@[@"Album", @"Open"];
-    for (NSInteger i = 0; i < btnTitle.count; i ++) {
-        UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
-        
-        btn.frame = CGRectMake((btnWidth + 40) * i + 50, CGRectGetMaxY(labIntroudction.frame) + 2, btnWidth, btnHeight);
-        [btn setTitle:btnTitle[i] forState:UIControlStateNormal];
-        [btn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-        btn.tag = i + BTN_TAG;
-        if (btn.tag == BTN_TAG + 1) {
-            [btn setTitle:@"Closed" forState:UIControlStateSelected];
-            btn.selected = NO;
-        }
-        [btn addTarget:self action:@selector(btnClick:) forControlEvents:UIControlEventTouchUpInside];
-        [self addSubview:btn];
-    }
-}
-
-- (void)btnClick:(UIButton *)btn {
-    if (self.SYQRCodeOverlayViewBtnAction) {
-        self.SYQRCodeOverlayViewBtnAction(btn);
-    }
 }
 
 - (void)dealloc {

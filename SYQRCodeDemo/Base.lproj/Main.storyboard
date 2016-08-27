@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9531" systemVersion="15C50" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="QOk-A9-jnw">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10117" systemVersion="15F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="QOk-A9-jnw">
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
     </dependencies>
     <scenes>
         <!--View Controller-->
@@ -17,25 +17,6 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" image="codeImage" translatesAutoresizingMaskIntoConstraints="NO" id="GRJ-XS-KQK">
-                                <rect key="frame" x="200" y="244" width="200" height="200"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="200" id="981-Dv-zg4"/>
-                                    <constraint firstAttribute="height" constant="200" id="Cq0-K4-lJq"/>
-                                </constraints>
-                                <variation key="default">
-                                    <mask key="constraints">
-                                        <exclude reference="981-Dv-zg4"/>
-                                        <exclude reference="Cq0-K4-lJq"/>
-                                    </mask>
-                                </variation>
-                                <variation key="heightClass=regular">
-                                    <mask key="constraints">
-                                        <include reference="981-Dv-zg4"/>
-                                        <include reference="Cq0-K4-lJq"/>
-                                    </mask>
-                                </variation>
-                            </imageView>
                             <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vvN-kG-Si5">
                                 <rect key="frame" x="194" y="180" width="212" height="33"/>
                                 <constraints>
@@ -63,7 +44,7 @@
                                     <constraint firstAttribute="width" constant="152" id="Ksv-23-foL"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <state key="normal" title="扫描和读取二维码"/>
+                                <state key="normal" title="扫描二维码"/>
                                 <variation key="default">
                                     <mask key="constraints">
                                         <exclude reference="Ksv-23-foL"/>
@@ -78,24 +59,83 @@
                                     <action selector="scanoAction" destination="vXZ-lx-hvc" eventType="touchUpInside" id="pye-8u-hU0"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="OSG-kk-AOl">
+                                <rect key="frame" x="-23" y="-15" width="46" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="30" id="j0D-NM-4LU">
+                                        <variation key="heightClass=regular-widthClass=compact" constant="33"/>
+                                    </constraint>
+                                    <constraint firstAttribute="width" constant="107" id="tqb-9O-ipf">
+                                        <variation key="heightClass=regular-widthClass=compact" constant="212"/>
+                                    </constraint>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <state key="normal" title="读取相册二维码"/>
+                                <variation key="default">
+                                    <mask key="constraints">
+                                        <exclude reference="j0D-NM-4LU"/>
+                                        <exclude reference="tqb-9O-ipf"/>
+                                    </mask>
+                                </variation>
+                                <variation key="heightClass=regular-widthClass=compact">
+                                    <mask key="constraints">
+                                        <include reference="j0D-NM-4LU"/>
+                                        <include reference="tqb-9O-ipf"/>
+                                    </mask>
+                                </variation>
+                                <connections>
+                                    <action selector="readAction:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="nbY-Yy-Zck"/>
+                                </connections>
+                            </button>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="test.png" translatesAutoresizingMaskIntoConstraints="NO" id="h1Z-3U-UgV">
+                                <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="80" id="HPs-1U-Bwg"/>
+                                    <constraint firstAttribute="width" constant="80" id="p90-tO-2bf"/>
+                                </constraints>
+                                <variation key="default">
+                                    <mask key="constraints">
+                                        <exclude reference="HPs-1U-Bwg"/>
+                                        <exclude reference="p90-tO-2bf"/>
+                                    </mask>
+                                </variation>
+                                <variation key="heightClass=regular-widthClass=compact">
+                                    <mask key="constraints">
+                                        <include reference="HPs-1U-Bwg"/>
+                                        <include reference="p90-tO-2bf"/>
+                                    </mask>
+                                </variation>
+                            </imageView>
                         </subviews>
                         <color key="backgroundColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.95686274510000002" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
+                            <constraint firstItem="h1Z-3U-UgV" firstAttribute="top" secondItem="OSG-kk-AOl" secondAttribute="bottom" constant="22" id="7HZ-eb-PVv">
+                                <variation key="heightClass=regular-widthClass=compact" constant="21"/>
+                            </constraint>
                             <constraint firstItem="eN2-PX-moT" firstAttribute="centerX" secondItem="kh9-bI-dsS" secondAttribute="centerX" id="HFH-c1-mX0"/>
+                            <constraint firstItem="OSG-kk-AOl" firstAttribute="centerX" secondItem="kh9-bI-dsS" secondAttribute="centerX" id="InG-Gj-iGu"/>
                             <constraint firstItem="vvN-kG-Si5" firstAttribute="top" secondItem="eN2-PX-moT" secondAttribute="bottom" constant="24" id="Ov1-UV-50k"/>
                             <constraint firstItem="eN2-PX-moT" firstAttribute="top" secondItem="TEg-IT-UT7" secondAttribute="bottom" constant="59" id="cSD-eE-zQ7"/>
                             <constraint firstItem="vvN-kG-Si5" firstAttribute="centerX" secondItem="kh9-bI-dsS" secondAttribute="centerX" id="cxe-K7-Qjq"/>
-                            <constraint firstItem="GRJ-XS-KQK" firstAttribute="top" secondItem="vvN-kG-Si5" secondAttribute="bottom" constant="31" id="lgF-Il-IYJ"/>
-                            <constraint firstItem="GRJ-XS-KQK" firstAttribute="centerX" secondItem="kh9-bI-dsS" secondAttribute="centerX" id="rWz-or-VDT"/>
+                            <constraint firstItem="h1Z-3U-UgV" firstAttribute="centerX" secondItem="kh9-bI-dsS" secondAttribute="centerX" id="g2I-v4-Ghq"/>
+                            <constraint firstItem="OSG-kk-AOl" firstAttribute="top" secondItem="vvN-kG-Si5" secondAttribute="bottom" constant="25" id="wpb-hu-9xa">
+                                <variation key="heightClass=regular-widthClass=compact" constant="23"/>
+                            </constraint>
                         </constraints>
                         <variation key="default">
+                            <mask key="subviews">
+                                <exclude reference="OSG-kk-AOl"/>
+                                <exclude reference="h1Z-3U-UgV"/>
+                            </mask>
                             <mask key="constraints">
                                 <exclude reference="HFH-c1-mX0"/>
                                 <exclude reference="cSD-eE-zQ7"/>
                                 <exclude reference="Ov1-UV-50k"/>
                                 <exclude reference="cxe-K7-Qjq"/>
-                                <exclude reference="lgF-Il-IYJ"/>
-                                <exclude reference="rWz-or-VDT"/>
+                                <exclude reference="InG-Gj-iGu"/>
+                                <exclude reference="wpb-hu-9xa"/>
+                                <exclude reference="7HZ-eb-PVv"/>
+                                <exclude reference="g2I-v4-Ghq"/>
                             </mask>
                         </variation>
                         <variation key="heightClass=regular">
@@ -104,19 +144,29 @@
                                 <include reference="cSD-eE-zQ7"/>
                                 <include reference="Ov1-UV-50k"/>
                                 <include reference="cxe-K7-Qjq"/>
-                                <include reference="lgF-Il-IYJ"/>
-                                <include reference="rWz-or-VDT"/>
+                            </mask>
+                        </variation>
+                        <variation key="heightClass=regular-widthClass=compact">
+                            <mask key="subviews">
+                                <include reference="OSG-kk-AOl"/>
+                                <include reference="h1Z-3U-UgV"/>
+                            </mask>
+                            <mask key="constraints">
+                                <include reference="InG-Gj-iGu"/>
+                                <include reference="wpb-hu-9xa"/>
+                                <include reference="7HZ-eb-PVv"/>
+                                <include reference="g2I-v4-Ghq"/>
                             </mask>
                         </variation>
                     </view>
                     <navigationItem key="navigationItem" id="hSd-sx-gU2"/>
                     <connections>
-                        <outlet property="imageView" destination="GRJ-XS-KQK" id="TGE-ef-L7t"/>
+                        <outlet property="imageView" destination="h1Z-3U-UgV" id="kV5-GE-NBL"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="x5A-6p-PRh" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="201" y="300"/>
+            <point key="canvasLocation" x="373.5" y="301.5"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="7a1-M9-6Jo">
@@ -136,6 +186,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="codeImage" width="307" height="307"/>
+        <image name="test.png" width="223" height="226"/>
     </resources>
 </document>

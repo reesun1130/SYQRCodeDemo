@@ -17,11 +17,8 @@ static const float kLineMinY = 121;
 static const float kLineMaxY = 380;
 static const float kReaderViewWidth = 259;
 static const float kReaderViewHeight = 259;
-static const float BTN_TAG = 100000;
 
 @interface SYQRCodeOverlayView : UIView
-
-@property (nonatomic, copy) void (^SYQRCodeOverlayViewBtnAction) (UIButton *);
 
 - (instancetype)initWithFrame:(CGRect)frame
                    basedLayer:(CALayer *)layer;

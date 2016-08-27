@@ -8,7 +8,6 @@
 
 #import "SYQRCodeViewController.h"
 #import <AVFoundation/AVFoundation.h>
-#import <ZXingObjC/ZXingObjC.h>
 #import "SYQRCodeOverlayView.h"
 #import "AVCaptureVideoPreviewLayer+Helper.h"
 
@@ -21,6 +20,7 @@
 @property (nonatomic, strong) NSTimer *lineTimer;
 @property (nonatomic, strong) UILabel *tipsLabel;
 @property (nonatomic, strong) UIActivityIndicatorView *vActivityIndicator;
+@property (nonatomic, strong) UIButton *rightButton;
 
 @end
 
@@ -32,6 +32,18 @@
     self.view.backgroundColor = [UIColor blackColor];
     self.title = @"Scan";
     
+    UIButton *leftButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 60, 44)];
+    [leftButton setTitle:@"关闭" forState:UIControlStateNormal];
+    [leftButton addTarget:self action:@selector(btnCloseClick:) forControlEvents:UIControlEventTouchUpInside];
+    UIBarButtonItem *leftItem = [[UIBarButtonItem alloc] initWithCustomView:leftButton];
+    self.navigationItem.leftBarButtonItem = leftItem;
+
+    _rightButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 60, 44)];
+    [_rightButton setTitle:@"开灯" forState:UIControlStateNormal];
+    [_rightButton addTarget:self action:@selector(btnClick:) forControlEvents:UIControlEventTouchUpInside];
+    UIBarButtonItem *rightItem = [[UIBarButtonItem alloc] initWithCustomView:_rightButton];
+    self.navigationItem.rightBarButtonItem = rightItem;
+
     _vActivityIndicator = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake((SCREEN_WIDTH - 100) / 2.0, (SCREEN_HEIGHT - 164)  / 2.0, 100, 100)];
     _vActivityIndicator.hidesWhenStopped = YES;
     _vActivityIndicator.backgroundColor = [UIColor redColor];
@@ -145,12 +157,7 @@
 }
 
 - (void)setOverlayPickerView {
-    __weak SYQRCodeViewController *weakSelf = self;
-    
     SYQRCodeOverlayView *vOverlayer = [[SYQRCodeOverlayView alloc] initWithFrame:self.view.bounds basedLayer:_qrVideoPreviewLayer];
-    vOverlayer.SYQRCodeOverlayViewBtnAction = ^(UIButton *btn){
-        [weakSelf btnClick:btn];
-    };
     [self.view addSubview:vOverlayer];
     
     //添加过渡动画，类似微信
@@ -180,100 +187,37 @@
 }
 
 - (void)turnOnTorch:(BOOL)on {
-    [_captureDevice lockForConfiguration:nil];
-    if (on) {
-        [_captureDevice setTorchMode:AVCaptureTorchModeOn];
+    if (_captureDevice) {
+        [_captureDevice lockForConfiguration:nil];
+        if (on) {
+            [_captureDevice setTorchMode:AVCaptureTorchModeOn];
+        }
+        else {
+            [_captureDevice setTorchMode: AVCaptureTorchModeOff];
+        }
+        
+        [_captureDevice unlockForConfiguration];
     }
-    else {
-        [_captureDevice setTorchMode: AVCaptureTorchModeOff];
-    }
-    
-    [_captureDevice unlockForConfiguration];
 }
-
 
 #pragma mark - Button Event
 
+- (void)btnCloseClick:(UIButton *)sender {
+    [self stopSYQRCodeReading];
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
 - (void)btnClick:(UIButton *)sender {
-    //Album 读取
-    if (sender.tag == BTN_TAG) {
-        [self gotoImagePickerController];
-    }
-    else if(sender.tag == BTN_TAG + 1) {
-        //Touch
-        if (sender.selected) {
-            [self turnOnTorch:NO];
-        }
-        else {
-            [self turnOnTorch:YES];
-        }
-        
-        sender.selected = !sender.selected;
-    }
-}
-
-#pragma mark - UINavigationControllerDelegate
-
-- (void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)viewController animated:(BOOL)animated {
-    viewController.navigationItem.rightBarButtonItem.tintColor = [UIColor whiteColor];
-}
-
-#pragma mark -UIImagePickerControllerDelegate
-
-- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
-    [picker dismissViewControllerAnimated:YES completion:nil];
-    
-    UIImage *loadImage= [info objectForKey:UIImagePickerControllerOriginalImage];
-    
-    NSLog(@"%@", loadImage);
-    
-    NSString *des = @"";
-    
-    if (kIOS8_OR_LATER) {
-        // if you only iOS >= 8.0 you can use system(this) method
-        CIContext *context = [CIContext contextWithOptions:nil];
-        CIDetector *detector = [CIDetector detectorOfType:CIDetectorTypeQRCode context:context options:@{CIDetectorAccuracy:CIDetectorAccuracyHigh}];
-        CIImage *image = [CIImage imageWithCGImage:loadImage.CGImage];
-        NSArray *features = [detector featuresInImage:image];
-        
-        if (features.count > 0) {
-            CIQRCodeFeature *feature = [features firstObject];
-            
-            if (feature.messageString.length > 0) {
-                des = [des stringByAppendingString:feature.messageString];
-            }
-        }
+    //Touch
+    if (sender.selected) {
+        [self turnOnTorch:NO];
+        [_rightButton setTitle:@"开灯" forState:UIControlStateNormal];
     }
     else {
-#warning 一些网站:http://sauchye.com 无法识别 bug
-        CGImageRef imageToDecode = loadImage.CGImage;
-        ZXLuminanceSource *source = [[ZXCGImageLuminanceSource alloc] initWithCGImage:imageToDecode];
-        ZXBinaryBitmap *bitmap = [ZXBinaryBitmap binaryBitmapWithBinarizer:[ZXHybridBinarizer binarizerWithSource:source]];
-        
-        NSError *error = nil;
-        
-        ZXDecodeHints *hints = [ZXDecodeHints hints];
-        ZXMultiFormatReader *reader = [ZXMultiFormatReader reader];
-        ZXResult *result = [reader decode:bitmap
-                                    hints:hints
-                                    error:&error];
-        
-        if (result.text.length > 0) {
-            des = [des stringByAppendingString:result.text];
-        }
+        [self turnOnTorch:YES];
+        [_rightButton setTitle:@"关灯" forState:UIControlStateNormal];
     }
-    
-    if (des.length > 0) {
-        NSLog(@"contents =%@",des);
-        [self showAlertWithTitle:nil message:des];
-    }
-    else {
-        [self showAlertWithTitle:nil message:@"解析失败"];
-    }
-}
-
-- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
-    [picker dismissViewControllerAnimated:YES completion:nil];
+    sender.selected = !sender.selected;
 }
 
 #pragma mark -AVCaptureMetadataOutputObjectsDelegate
@@ -335,6 +279,8 @@
 }
 
 - (void)stopSYQRCodeReading {
+    [self turnOnTorch:NO];
+
     if (_lineTimer) {
         [_lineTimer invalidate];
         _lineTimer = nil;
@@ -344,7 +290,7 @@
         [_qrSession stopRunning];
         _qrSession = nil;
     }
-    
+
     NSLog(@"stop reading");
 }
 
