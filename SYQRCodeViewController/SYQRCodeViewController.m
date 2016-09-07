@@ -76,23 +76,17 @@
     __block BOOL canAccess = NO;
     
     AVAuthorizationStatus status = [AVCaptureDevice authorizationStatusForMediaType:mediaType];
-    switch (status) {
-        case AVAuthorizationStatusNotDetermined: {
-            [AVCaptureDevice requestAccessForMediaType:mediaType completionHandler:^(BOOL granted) {
-                canAccess = granted;
-            }];
-            break;
-        }
-        case AVAuthorizationStatusAuthorized: {
-            canAccess = YES;
-            break;
-        }
-        case AVAuthorizationStatusDenied:
-        case AVAuthorizationStatusRestricted:
-            canAccess = NO;
-            break;
-        default:
-            break;
+    
+    if (status == AVAuthorizationStatusNotDetermined) {
+        dispatch_semaphore_t dis_sema = dispatch_semaphore_create(0);
+        [AVCaptureDevice requestAccessForMediaType:mediaType completionHandler:^(BOOL granted) {
+            dispatch_semaphore_signal(dis_sema);
+            canAccess = granted;
+        }];
+        dispatch_semaphore_wait(dis_sema, DISPATCH_TIME_FOREVER);
+    }
+    else if (status == AVAuthorizationStatusAuthorized) {
+        canAccess = YES;
     }
     
     return canAccess;
