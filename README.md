@@ -3,6 +3,7 @@
 SYQRCodeDemo:仿微信二维码扫描
 
 ### Latest
+* swift实现：<a href="https://github.com/reesun1130/SYQRCodeDemoSwift">SYQRCodeDemoSwift</a>
 * 修复bug，优化实现和用户体验，更加简单易用（新增类似微信的打开动画效果）
 * 修改相机权限判断
 * 添加新的类，拆分view
