@@ -2,8 +2,8 @@
 //  SYQRCodeUtility.m
 //  SYQRCodeDemo
 //
-//  Created by autohome on 16/9/8.
-//  Copyright © 2016年 SY. All rights reserved.
+//  Created by ree.sun on 16/9/8.
+//  Copyright © Ree Sun <ree.sun.cn@hotmail.com || 1507602555@qq.com>
 //
 
 #import "SYQRCodeUtility.h"
