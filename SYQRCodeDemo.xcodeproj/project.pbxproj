@@ -20,6 +20,7 @@
 		1C409F141D7042920047B6FA /* QRCodeTopRight@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C409F051D7042920047B6FA /* QRCodeTopRight@3x.png */; };
 		1C409F151D7042920047B6FA /* SYQRCodeOverlayView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C409F071D7042920047B6FA /* SYQRCodeOverlayView.m */; };
 		1C409F161D7042920047B6FA /* SYQRCodeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C409F091D7042920047B6FA /* SYQRCodeViewController.m */; };
+		1C93B6341D814C01005BB197 /* SYQRCodeUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C93B6331D814C01005BB197 /* SYQRCodeUtility.m */; };
 		3367D1DB1D71802000ED2F27 /* ReadQRCodeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3367D1D91D71802000ED2F27 /* ReadQRCodeViewController.m */; };
 		3367D1DC1D71802000ED2F27 /* ReadQRCodeViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3367D1DA1D71802000ED2F27 /* ReadQRCodeViewController.xib */; };
 		33688DED1D71CB4D0085E242 /* test.png in Resources */ = {isa = PBXBuildFile; fileRef = 33688DEC1D71CB4D0085E242 /* test.png */; };
@@ -50,6 +51,8 @@
 		1C409F071D7042920047B6FA /* SYQRCodeOverlayView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SYQRCodeOverlayView.m; sourceTree = "<group>"; };
 		1C409F081D7042920047B6FA /* SYQRCodeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SYQRCodeViewController.h; sourceTree = "<group>"; };
 		1C409F091D7042920047B6FA /* SYQRCodeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SYQRCodeViewController.m; sourceTree = "<group>"; };
+		1C93B6321D814C01005BB197 /* SYQRCodeUtility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SYQRCodeUtility.h; sourceTree = "<group>"; };
+		1C93B6331D814C01005BB197 /* SYQRCodeUtility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SYQRCodeUtility.m; sourceTree = "<group>"; };
 		3367D1D81D71802000ED2F27 /* ReadQRCodeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReadQRCodeViewController.h; sourceTree = "<group>"; };
 		3367D1D91D71802000ED2F27 /* ReadQRCodeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReadQRCodeViewController.m; sourceTree = "<group>"; };
 		3367D1DA1D71802000ED2F27 /* ReadQRCodeViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ReadQRCodeViewController.xib; sourceTree = "<group>"; };
@@ -99,6 +102,8 @@
 				1C409F071D7042920047B6FA /* SYQRCodeOverlayView.m */,
 				1C409F081D7042920047B6FA /* SYQRCodeViewController.h */,
 				1C409F091D7042920047B6FA /* SYQRCodeViewController.m */,
+				1C93B6321D814C01005BB197 /* SYQRCodeUtility.h */,
+				1C93B6331D814C01005BB197 /* SYQRCodeUtility.m */,
 			);
 			path = SYQRCodeViewController;
 			sourceTree = "<group>";
@@ -286,6 +291,7 @@
 			files = (
 				3367D1DB1D71802000ED2F27 /* ReadQRCodeViewController.m in Sources */,
 				1C409F151D7042920047B6FA /* SYQRCodeOverlayView.m in Sources */,
+				1C93B6341D814C01005BB197 /* SYQRCodeUtility.m in Sources */,
 				CFF594321A5BC9040090BF13 /* ViewController.m in Sources */,
 				1C409F161D7042920047B6FA /* SYQRCodeViewController.m in Sources */,
 				CFF5942F1A5BC9040090BF13 /* AppDelegate.m in Sources */,

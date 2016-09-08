@@ -7,9 +7,9 @@
 //
 
 #import "SYQRCodeViewController.h"
-#import <AVFoundation/AVFoundation.h>
 #import "SYQRCodeOverlayView.h"
 #import "AVCaptureVideoPreviewLayer+Helper.h"
+#import "SYQRCodeUtility.h"
 
 @interface SYQRCodeViewController () <AVCaptureMetadataOutputObjectsDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate>
 
@@ -51,7 +51,7 @@
     [self.view addSubview:_vActivityIndicator];
 
     //权限受限
-    if (![self canAccessAVCaptureDeviceForMediaType:AVMediaTypeVideo]) {
+    if (![SYQRCodeUtility canAccessAVCaptureDeviceForMediaType:AVMediaTypeVideo]) {
         [self showUnAuthorizedTips:YES];
     }
     
@@ -63,43 +63,14 @@
 
 - (void)displayScanView {
     //没权限显示权限受限
-    if ([self canAccessAVCaptureDeviceForMediaType:AVMediaTypeVideo] && [self loadCaptureUI]) {
+    if ([self loadCaptureUI]) {
+        [self showUnAuthorizedTips:NO];
         [self setOverlayPickerView];
         [self startSYQRCodeReading];
     }
     else {
         [self showUnAuthorizedTips:YES];
     }
-}
-
-- (BOOL)canAccessAVCaptureDeviceForMediaType:(NSString *)mediaType {
-    __block BOOL canAccess = NO;
-    
-    AVAuthorizationStatus status = [AVCaptureDevice authorizationStatusForMediaType:mediaType];
-    
-    if (status == AVAuthorizationStatusNotDetermined) {
-        dispatch_semaphore_t dis_sema = dispatch_semaphore_create(0);
-        [AVCaptureDevice requestAccessForMediaType:mediaType completionHandler:^(BOOL granted) {
-            dispatch_semaphore_signal(dis_sema);
-            canAccess = granted;
-        }];
-        dispatch_semaphore_wait(dis_sema, DISPATCH_TIME_FOREVER);
-    }
-    else if (status == AVAuthorizationStatusAuthorized) {
-        canAccess = YES;
-    }
-    
-    return canAccess;
-}
-
-- (void)showAlertWithTitle:(NSString *)title
-                   message:(NSString *)message {
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title
-                                                    message:message
-                                                   delegate:nil
-                                          cancelButtonTitle:@"知道了"
-                                          otherButtonTitles:nil, nil];
-    [alert show];
 }
 
 - (void)showUnAuthorizedTips:(BOOL)flag {
@@ -124,19 +95,18 @@
     [_vActivityIndicator stopAnimating];
 }
 
-#warning 使用openURL前请添加scheme：prefs
 - (void)_handleTipsTap {
-    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:kIOS8_OR_LATER ? UIApplicationOpenSettingsURLString : @"prefs:root"]];
+    [SYQRCodeUtility openSystemSettings];
 }
 
 - (BOOL)loadCaptureUI {
     _captureDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
     
     if (![_captureDevice hasTorch]) {
-        [self showAlertWithTitle:@"提示" message:@"当前设备没有闪光灯"];
+        [SYQRCodeUtility showAlertWithTitle:@"提示" message:@"当前设备没有闪光灯"];
     }
 
-    _qrVideoPreviewLayer = [AVCaptureVideoPreviewLayer captureVideoPreviewLayerWithFrame:self.view.bounds rectOfInterest:[self getReaderViewBoundsWithSize:CGSizeMake(kReaderViewWidth, kReaderViewHeight)] captureDevice:_captureDevice metadataObjectsDelegate:self];
+    _qrVideoPreviewLayer = [AVCaptureVideoPreviewLayer captureVideoPreviewLayerWithFrame:self.view.bounds rectOfInterest:[SYQRCodeUtility getReaderViewBoundsWithSize:CGSizeMake(kReaderViewWidth, kReaderViewHeight)] captureDevice:_captureDevice metadataObjectsDelegate:self];
     
     if (!_qrVideoPreviewLayer) {
         return NO;
@@ -146,37 +116,20 @@
     return YES;
 }
 
-- (CGRect)getReaderViewBoundsWithSize:(CGSize)asize {
-    return CGRectMake(kLineMinY / SCREEN_HEIGHT, ((SCREEN_WIDTH - asize.width) / 2.0) / SCREEN_WIDTH, asize.height / SCREEN_HEIGHT, asize.width / SCREEN_WIDTH);
-}
-
 - (void)setOverlayPickerView {
     SYQRCodeOverlayView *vOverlayer = [[SYQRCodeOverlayView alloc] initWithFrame:self.view.bounds basedLayer:_qrVideoPreviewLayer];
     [self.view addSubview:vOverlayer];
     
     //添加过渡动画，类似微信
-    [self.view.layer insertSublayer:_qrVideoPreviewLayer atIndex:0];
-    
-    CAKeyframeAnimation *animationLayer = [CAKeyframeAnimation animationWithKeyPath:@"transform"];
-    animationLayer.duration = 0.1;
-    
-    NSMutableArray *values = [NSMutableArray array];
-    [values addObject:[NSValue valueWithCATransform3D:CATransform3DMakeScale(0.1, 0.1, 1.0)]];
-    [values addObject:[NSValue valueWithCATransform3D:CATransform3DMakeScale(1.0, 1.0, 1.0)]];
-    animationLayer.values = values;
-    [_qrVideoPreviewLayer addAnimation:animationLayer forKey:nil];
+    [self.view.layer insertSublayer:_qrVideoPreviewLayer atIndex:0];    
+    [_qrVideoPreviewLayer addAnimation:[SYQRCodeUtility zoomOutAnimation] forKey:nil];
 }
 
 - (void)gotoImagePickerController {
-    UIImagePickerControllerSourceType sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
-    if (![UIImagePickerController isSourceTypeAvailable: UIImagePickerControllerSourceTypeCamera]) {
-        sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
-    }
-    
     UIImagePickerController *picker = [[UIImagePickerController alloc] init];
     picker.delegate = self;
     picker.allowsEditing = NO;
-    picker.sourceType = sourceType;
+    picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
     [self presentViewController:picker animated:YES completion:nil];
 }
 

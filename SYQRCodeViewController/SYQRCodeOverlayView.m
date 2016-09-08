@@ -7,6 +7,7 @@
 //
 
 #import "SYQRCodeOverlayView.h"
+#import "SYQRCodeUtility.h"
 
 @interface SYQRCodeOverlayView ()
 

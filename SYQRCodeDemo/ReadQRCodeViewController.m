@@ -9,6 +9,7 @@
 #import "ReadQRCodeViewController.h"
 #import <ZXingObjC/ZXingObjC.h>
 #import "SYQRCodeOverlayView.h"
+#import "SYQRCodeUtility.h"
 
 @interface ReadQRCodeViewController () <UIImagePickerControllerDelegate, UINavigationControllerDelegate>
 
@@ -67,22 +68,11 @@
     [picker dismissViewControllerAnimated:YES completion:nil];
     
     UIImage *loadImage= [info objectForKey:UIImagePickerControllerOriginalImage];
+    
     NSString *des = @"";
     
     if (kIOS8_OR_LATER) {
-        // if you only iOS >= 8.0 you can use system(this) method
-        CIContext *context = [CIContext contextWithOptions:nil];
-        CIDetector *detector = [CIDetector detectorOfType:CIDetectorTypeQRCode context:context options:@{CIDetectorAccuracy:CIDetectorAccuracyHigh}];
-        CIImage *image = [CIImage imageWithCGImage:loadImage.CGImage];
-        NSArray *features = [detector featuresInImage:image];
-        
-        if (features.count > 0) {
-            CIQRCodeFeature *feature = [features firstObject];
-            
-            if (feature.messageString.length > 0) {
-                des = [des stringByAppendingString:feature.messageString];
-            }
-        }
+        des = [SYQRCodeUtility readQRCodeImage:loadImage];
     }
     else {
         CGImageRef imageToDecode = loadImage.CGImage;

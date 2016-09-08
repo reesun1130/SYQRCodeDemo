@@ -15,6 +15,7 @@ otherButtonTitles:nil] show] \
 #import "ViewController.h"
 #import "SYQRCodeViewController.h"
 #import "ReadQRCodeViewController.h"
+#import "SYQRCodeUtility.h"
 
 static NSString *const text = @"https://github.com/reesun1130";
 
@@ -65,36 +66,7 @@ static NSString *const text = @"https://github.com/reesun1130";
 }
 
 - (IBAction)generateAction:(id)sender {
-    NSData *stringData = [text dataUsingEncoding: NSUTF8StringEncoding];
-    //生成
-    CIFilter *qrFilter = [CIFilter filterWithName:@"CIQRCodeGenerator"];
-    [qrFilter setValue:stringData forKey:@"inputMessage"];
-    [qrFilter setValue:@"M" forKey:@"inputCorrectionLevel"];
-    
-    UIColor *onColor = [UIColor whiteColor];
-    UIColor *offColor = [UIColor darkGrayColor];
-    
-    //上色
-    CIFilter *colorFilter = [CIFilter filterWithName:@"CIFalseColor"
-                                       keysAndValues:
-                             @"inputImage",qrFilter.outputImage,
-                             @"inputColor0",[CIColor colorWithCGColor:onColor.CGColor],
-                             @"inputColor1",[CIColor colorWithCGColor:offColor.CGColor],
-                             nil];
-    
-    CIImage *qrImage = colorFilter.outputImage;
-    
-    //绘制
-    CGSize size = CGSizeMake(80, 80);
-    CGImageRef cgImage = [[CIContext contextWithOptions:nil] createCGImage:qrImage fromRect:qrImage.extent];
-    UIGraphicsBeginImageContext(size);
-    CGContextRef context = UIGraphicsGetCurrentContext();
-    CGContextSetInterpolationQuality(context, kCGInterpolationNone);
-    CGContextScaleCTM(context, 1.0, -1.0);
-    CGContextDrawImage(context, CGContextGetClipBoundingBox(context), cgImage);
-    UIImage *codeImage = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    CGImageRelease(cgImage);
+    UIImage *codeImage = [SYQRCodeUtility generateQRCodeImage:text size:CGSizeMake(200, 200)];
     
     if (codeImage) {
         self.imageView.image = codeImage;
