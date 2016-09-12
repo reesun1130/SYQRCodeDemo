@@ -91,7 +91,7 @@
     UILabel *labIntroudction = [[UILabel alloc] init];
     labIntroudction.backgroundColor = [UIColor clearColor];
     CGFloat padding = (SCREEN_WIDTH - kReaderViewWidth)/2;
-    labIntroudction.frame = CGRectMake(padding, CGRectGetMinY(downView.frame) + 25, kReaderViewWidth, 20);
+    labIntroudction.frame = CGRectMake(padding, CGRectGetMinY(downView.frame) + 15, kReaderViewWidth, 20);
     labIntroudction.textAlignment = NSTextAlignmentCenter;
     labIntroudction.font = [UIFont boldSystemFontOfSize:13.0];
     labIntroudction.textColor = [UIColor whiteColor];
