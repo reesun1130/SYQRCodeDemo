@@ -24,39 +24,60 @@
     
     AVCaptureSession *session = [[AVCaptureSession alloc] init];
     
-    //设置检测质量，质量越高扫描越精确
-    if ([session canSetSessionPreset:AVCaptureSessionPreset1920x1080]) {
-        [session setSessionPreset:AVCaptureSessionPreset1920x1080];
+    //设置检测质量，质量越高扫描越精确，默认AVCaptureSessionPresetHigh
+    if ([captureDevice supportsAVCaptureSessionPreset:AVCaptureSessionPreset1920x1080]) {
+        if ([session canSetSessionPreset:AVCaptureSessionPreset1920x1080]) {
+            [session setSessionPreset:AVCaptureSessionPreset1920x1080];
+        }
     }
-    else if ([session canSetSessionPreset:AVCaptureSessionPreset1280x720]) {
-        [session setSessionPreset:AVCaptureSessionPreset1280x720];
-    }
-    else if ([session canSetSessionPreset:AVCaptureSessionPresetiFrame960x540]) {
-        [session setSessionPreset:AVCaptureSessionPresetiFrame960x540];
-    }
-    else if ([session canSetSessionPreset:AVCaptureSessionPreset640x480]) {
-        [session setSessionPreset:AVCaptureSessionPreset640x480];
-    }
-    else {
-        [session setSessionPreset:AVCaptureSessionPresetLow];
+    else if ([captureDevice supportsAVCaptureSessionPreset:AVCaptureSessionPreset1280x720]) {
+        if ([session canSetSessionPreset:AVCaptureSessionPreset1280x720]) {
+            [session setSessionPreset:AVCaptureSessionPreset1280x720];
+        }
     }
     
     //添加输入设备
     if ([session canAddInput:input]){
         [session addInput:input];
     }
+    else {
+        return nil;
+    }
     
     AVCaptureMetadataOutput *output = [[AVCaptureMetadataOutput alloc] init];
     [output setMetadataObjectsDelegate:metadataObjectsDelegate queue:dispatch_get_main_queue()];
-    [output setRectOfInterest:rectOfInterest];
     
+    //识别区域
+    [output setRectOfInterest:rectOfInterest];
+
     //添加输出元
     if ([session canAddOutput:output]){
         [session addOutput:output];
     }
+    else {
+        return nil;
+    }
+    
+    BOOL availableQRCodeType = NO;
+    
+    //是否可以识别二维码
+    for (id availableType in output.availableMetadataObjectTypes) {
+        if (availableType && [availableType isKindOfClass:AVMetadataObjectTypeQRCode.class]) {
+            if ([[availableType lowercaseString] containsString:@"qrcode"]) {
+                availableQRCodeType = YES;
+                AMLog(@"availableType==%@",availableType);
+                break;
+            }
+        }
+    }
     
     //识别二维码
-    [output setMetadataObjectTypes:@[AVMetadataObjectTypeQRCode]];
+    if (availableQRCodeType) {
+        [output setMetadataObjectTypes:@[AVMetadataObjectTypeQRCode]];
+    }
+    else {
+        return nil;
+    }
     
     //扫描图层
     AVCaptureVideoPreviewLayer *preview = [AVCaptureVideoPreviewLayer layerWithSession:session];
